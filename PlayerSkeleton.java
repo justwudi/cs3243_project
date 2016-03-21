@@ -36,6 +36,19 @@ public class PlayerSkeleton {
 		return max;
 	}
 
+	// Number of transitions
+	private int getTransitions(State state) {
+		int transitions = 0;
+		int[] columnHeights = getHeight(state);
+		
+		for (int col = 1; col < columnHeights.length; col++) {
+			if (Math.abs(columnHeights[col] - columnHeights[col - 1]) > 0) {
+				transitions++;
+			}
+		}
+		return transitions;
+	}
+
 	// Self explanatory
 	private int numberOfHoles(State state) {
 		int[] heightArray = getHeight(state);
