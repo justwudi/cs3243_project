@@ -61,10 +61,9 @@ public class PlayerSkeleton {
 
 	private int numberOfOccupiedCell(State state) {
 		int[][] field = state.getField();
-		int maxHeight = getMaxColumnHeight(state);
 		int fullCells = 0;
 		
-		for (int row = 0; row < maxHeight; row++) {
+		for (int row = 0; row < State.ROWS; row++) {
 			for (int col = 0; col < State.COLS; col++) {
 				if (field[row][col] != 0) {
 					fullCells++;
