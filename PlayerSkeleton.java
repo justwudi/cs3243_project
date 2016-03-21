@@ -4,10 +4,12 @@ public class PlayerSkeleton {
 
 	private int[][] nextField;
 	private int[] heightArray;
+	private int rowsCleared = 0;
 
-	private void generateNextField(State state, int[] move) {
+	private boolean generateNextField(State state, int[] move) {
 		nextField = deepCopyField(state.getField());
-		heightArray = state.getTop();
+		heightArray = Arrays.copyOf(state.getTop(), state.getTop().length);
+		rowsCleared = 0;
 		int nextPieceIndex = state.getNextPiece();
 		int turn = state.getTurnNumber();
 
@@ -29,6 +31,10 @@ public class PlayerSkeleton {
 			height = Math.max(height, heightArray[nextColumn] - pBottom[col]);
 		}
 
+		if (height + pHeight >= State.ROWS) {
+			return false;
+		}
+
 		// for each column in the piece - fill in the appropriate blocks
 		for(int col = 0; col < pWidth; col++) {
 			int startRow = height + pBottom[col];
@@ -44,8 +50,6 @@ public class PlayerSkeleton {
 		for (int col = 0; col < pWidth; col++) {
 			heightArray[startColumn + col] = height + pTop[col];
 		}
-
-		int rowsCleared = 0;
 
 		// check for full rows - starting at the top
 		for (int row = height + pHeight - 1; row >= height; row--) {
@@ -76,65 +80,71 @@ public class PlayerSkeleton {
 				}
 			}
 		}
+
+		return true;
 	}
 
-	private	static final int NUM_F = 4;
-	
-	//F_WEIGHT = 0, F_VAL = 1
-	//Initialise F_VAL to 0
-	
-	private String[] featureNames = {
-		"MAX_HEIGHT",
-		"AVERAGE_HEIGHT",
-		"SUM_DIFFS",
-		"TRANSITIONS",
-		"HOLES"
+	private final String MAX_HEIGHT = "MAX_HEIGHT";
+	private final String AVG_HEIGHT = "AVG_HEIGHT";
+	private final String TRANSITIONS = "TRANSITIONS";
+	private final String HOLES = "HOLES";
+	private final String SUM_DIFFS = "SUM_DIFFS";
+	private final String ROWS_CLEARED = "ROWS_CLEARED";
+
+	private String[] features = {
+		MAX_HEIGHT,
+		AVG_HEIGHT,
+		TRANSITIONS,
+		HOLES,
+		SUM_DIFFS,
+		ROWS_CLEARED
 	};
 
-	private double[][] features = {
-		{-3, 0},
-		{-1, 0},
-		{-1.5, 0},
-		{-2, 0},
-		{-0.75, 0}
-	};
+	private HashMap<String, Double> featuresWeight = new HashMap<String, Double>();
+	private void initWeights() {
+		featuresWeight.put(MAX_HEIGHT,     -2.0);
+		featuresWeight.put(AVG_HEIGHT,     -1.0);
+		featuresWeight.put(TRANSITIONS,    -1.0);
+		featuresWeight.put(HOLES,           0.0);
+		featuresWeight.put(SUM_DIFFS,       0.0);
+		featuresWeight.put(ROWS_CLEARED,   10.0);
+	}
 
-	//Calculate utility 
+	//Calculate utility
 	private double getUtility(State state, int[] move) {
-		generateNextField(state, move);
+		if (!generateNextField(state, move)) {
+			return Double.MIN_VALUE;
+		}
 		double utility = 0;
-		
-		features[0][0] = 0;
-		for (int i = 0; i < heightArray.length; i++) {
-			features[0][0] = Math.max(features[0][0], heightArray[i]);
-		}
-		
-		features[0][1] = 0;
-		for (int i = 0; i < heightArray.length; i++) {
-			features[0][1] += heightArray[i];
-		}
-		features[0][1] = features[0][1] / heightArray.length;
 
-		features[0][2] = 0;
-		int[] diffArray = getAbsoluteDifference();
-		for (int i = 0; i < diffArray.length; i++) {
-			features[0][2] += diffArray[i];
-		}
-		
-		features[0][3] = getTransitions(state);
-
-		//features[0][4] = ;
-
-		for (int i = 0; i < features.length; i++) {
-			utility += features[i][0] * features[i][1];
-		}
+		utility += featuresWeight.get(MAX_HEIGHT) * getMaxHeight();
+		utility += featuresWeight.get(AVG_HEIGHT) * getAverageHeight();
+		utility += featuresWeight.get(TRANSITIONS) * getTransitions();
+		utility += featuresWeight.get(HOLES) * getNumberOfHoles();
+		utility += featuresWeight.get(ROWS_CLEARED) * getRowsCleared();
 
 		return utility;
 	}
 
 	// Array of columns, each index corresponds to the column's height
-	private int[] getHeight() {
-		return heightArray;
+	private int getMaxHeight() {
+		int max = 0;
+
+		for (int i = 0; i < heightArray.length; i++) {
+			max = Math.max(max, heightArray[i]);
+		}
+
+		return max;
+	}
+
+	private double getAverageHeight() {
+		int total = 0;
+
+		for (int col = 0; col < heightArray.length; col++) {
+			total += heightArray[col];
+		}
+
+		return ((double) total) / ((double) heightArray.length);
 	}
 
 	// Array of columns - 1, each index corresponds to the difference between that column
@@ -164,7 +174,7 @@ public class PlayerSkeleton {
 	}
 
 	// Number of transitions
-	private int getTransitions(State state) {
+	private int getTransitions() {
 		int transitions = 0;
 
 		for (int col = 1; col < heightArray.length; col++) {
@@ -176,8 +186,12 @@ public class PlayerSkeleton {
 	}
 
 	// Self explanatory
-	private int numberOfHoles() {
+	private int getNumberOfHoles() {
 		return 0;
+	}
+
+	private int getRowsCleared() {
+		return rowsCleared;
 	}
 
 	private int numberOfOccupiedCell(State state) {
@@ -229,13 +243,25 @@ public class PlayerSkeleton {
 
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
-		return 0;
+		int moveIndex = 0;
+		Double score = getUtility(state, legalMoves[0]);
+
+		for (int move = 1; move < legalMoves.length; move++) {
+			Double newScore = getUtility(state, legalMoves[move]);
+			if (newScore > score) {
+				score = newScore;
+				moveIndex = move;
+			}
+		}
+
+		return moveIndex;
 	}
 
 	public static void main(String[] args) {
 		State state = new State();
 		new TFrame(state);
 		PlayerSkeleton p = new PlayerSkeleton();
+		p.initWeights();
 		while(!state.hasLost()) {
 			state.makeMove(p.pickMove(state, state.legalMoves()));
 			state.draw();
