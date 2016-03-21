@@ -78,6 +78,60 @@ public class PlayerSkeleton {
 		}
 	}
 
+	private	static final int NUM_F = 4;
+	
+	//F_WEIGHT = 0, F_VAL = 1
+	//Initialise F_VAL to 0
+	
+	private String[] featureNames = {
+		"MAX_HEIGHT",
+		"AVERAGE_HEIGHT",
+		"SUM_DIFFS",
+		"TRANSITIONS",
+		"HOLES"
+	};
+
+	private double[][] features = {
+		{-3, 0},
+		{-1, 0},
+		{-1.5, 0},
+		{-2, 0},
+		{-0.75, 0}
+	};
+
+	//Calculate utility 
+	private double getUtility(State state, int[] move) {
+		generateNextField(state, move);
+		double utility = 0;
+		
+		features[0][0] = 0;
+		for (int i = 0; i < heightArray.length; i++) {
+			features[0][0] = Math.max(features[0][0], heightArray[i]);
+		}
+		
+		features[0][1] = 0;
+		for (int i = 0; i < heightArray.length; i++) {
+			features[0][1] += heightArray[i];
+		}
+		features[0][1] = features[0][1] / heightArray.length;
+
+		features[0][2] = 0;
+		int[] diffArray = getAbsoluteDifference();
+		for (int i = 0; i < diffArray.length; i++) {
+			features[0][2] += diffArray[i];
+		}
+		
+		features[0][3] = getTransitions(state);
+
+		//features[0][4] = ;
+
+		for (int i = 0; i < features.length; i++) {
+			utility += features[i][0] * features[i][1];
+		}
+
+		return utility;
+	}
+
 	// Array of columns, each index corresponds to the column's height
 	private int[] getHeight() {
 		return heightArray;
