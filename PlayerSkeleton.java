@@ -46,6 +46,22 @@ public class PlayerSkeleton {
 		return 0;
 	}
 
+	private int numberOfOccupiedCell(State state) {
+		int[][] field = state.getField();
+		int maxHeight = getMaxColumnHeight(state);
+		int fullCells = 0;
+		
+		for (int row = 0; row < maxHeight; row++) {
+			for (int col = 0; col < State.COLS; col++) {
+				if (field[row][col] != 0) {
+					fullCells++;
+				}
+			}
+		}
+		
+		return fullCells;
+	}
+	
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
 		return 0;
