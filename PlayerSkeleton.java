@@ -105,7 +105,7 @@ public class PlayerSkeleton {
 		featuresWeight.put(MAX_HEIGHT,     -2.0);
 		featuresWeight.put(AVG_HEIGHT,     -1.0);
 		featuresWeight.put(TRANSITIONS,    -1.0);
-		featuresWeight.put(HOLES,           0.0);
+		featuresWeight.put(HOLES,          -1.0);
 		featuresWeight.put(SUM_DIFFS,       0.0);
 		featuresWeight.put(ROWS_CLEARED,   10.0);
 	}
@@ -187,7 +187,55 @@ public class PlayerSkeleton {
 
 	// Self explanatory
 	private int getNumberOfHoles() {
-		return 0;
+		// int[] is an array of [row, col]
+		LinkedList<int[]> emptyPositions = new LinkedList<int[]>();
+		ArrayDeque<int[]> queue = new ArrayDeque<int[]>();
+		int height, row, col;
+		int totalHoles = 0;
+
+		for (col = 0; col < heightArray.length; col++) {
+			height = heightArray[col];
+
+			for (row = 0; row < height - 1; row++) {
+				if (nextField[row][col] == 0) {
+					emptyPositions.add(new int[] {row, col});
+				}
+			}
+		}
+
+		while (!emptyPositions.isEmpty()) {
+			boolean foundAdjacentPositions = false;
+			queue.addLast(emptyPositions.remove());
+
+			while (!foundAdjacentPositions) {
+				int[] position = queue.removeFirst();
+				row = position[0];
+				col = position[1];
+				int emptyNeighbours = 0;
+				int[][] neighbours = {
+					{row - 1, col},
+					{row + 1, col},
+					{row, col - 1},
+					{row, col + 1}
+				};
+
+				for (int[] neighbour : neighbours) {
+					if (emptyPositions.contains(neighbour)) {
+						emptyNeighbours += 1;
+						queue.addLast(neighbour);
+						emptyPositions.remove(neighbour);
+					}
+				}
+
+				if (emptyNeighbours == 0) {
+					foundAdjacentPositions = true;
+				}
+			}
+
+			totalHoles += 1;
+		}
+
+		return totalHoles;
 	}
 
 	private int getRowsCleared() {
