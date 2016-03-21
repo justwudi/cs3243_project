@@ -142,6 +142,41 @@ public class PlayerSkeleton {
 		return fullCells;
 	}
 	
+	private int sumOfWellsDepth(State state) {
+		int[] heightArray = getHeight(state);
+		int depth = 0;
+		int sumOfDepth = 0;
+		int heightA = 0;
+		int heightB = 0;
+		
+		for (int col = 0; col < State.COLS - 1; col++) {
+			heightA = heightArray[col];
+			heightB = heightArray[col+1];
+			depth = Math.abs(heightA - heightB);
+			
+			sumOfDepth += depth;
+		}
+		
+		return sumOfDepth;
+	}
+	
+	// Number of full cells in the column above each hole
+	private int holeDepth(State state, int row, int col) {
+		int[][] field = state.getField();
+		int[] heightArray = getHeight(state);
+		int height = heightArray[col];
+		int cellAboveHole = row + 1;
+		int holeDepth = 0;
+			
+		while (cellAboveHole < height) {
+			if (field[cellAboveHole][col] != 0) {
+				holeDepth++;
+			}
+		}
+		
+		return holeDepth;
+	}
+	
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
 		return 0;
