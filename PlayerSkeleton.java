@@ -289,6 +289,41 @@ public class PlayerSkeleton {
 		return holeDepth;
 	}
 
+// Number of rows having at least one hole
+        private int getNumberOfRowsWithHoles(State state) {
+            int[][] field = state.getField();
+            int numberOfRowsWithHoles = 0;
+            
+            for(int i = 0; i < getMaxColumnHeight(); i++){
+                for(int j = 0; j < State.COLS; j++){
+                    if(field[i][j] == 0){
+                        numberOfRowsWithHoles++;
+                        break;
+                    }
+                }
+            }
+            return numberOfRowsWithHoles;
+        }
+        
+        // Get the maximum depth of a well
+        private int getMaxWellDepth(){
+            int maxWellDepth = 0;
+            int depth = 0;
+            int heightA = 0;
+            int heightB = 0;
+
+            for (int col = 0; col < State.COLS - 1; col++) {
+                heightA = heightArray[col];
+                heightB = heightArray[col+1];
+                depth = Math.abs(heightA - heightB);
+                if(depth > maxWellDepth) {
+                    maxWellDepth = depth;
+                }
+            }
+            
+            return maxWellDepth;
+        }
+
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
 		int moveIndex = 0;
