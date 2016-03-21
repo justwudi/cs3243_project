@@ -78,12 +78,12 @@ public class PlayerSkeleton {
 		}
 	}
 
-	// Array of 10, each index corresponds to the column's height
+	// Array of columns, each index corresponds to the column's height
 	private int[] getHeight() {
 		return heightArray;
 	}
 
-	// Array of 9, each index corresponds to the difference between that column
+	// Array of columns - 1, each index corresponds to the difference between that column
 	// and the next column
 	private int[] getAbsoluteDifference() {
 		int[] differenceArray = new int[State.COLS - 1];
@@ -112,10 +112,9 @@ public class PlayerSkeleton {
 	// Number of transitions
 	private int getTransitions(State state) {
 		int transitions = 0;
-		int[] columnHeights = getHeight(state);
-		
-		for (int col = 1; col < columnHeights.length; col++) {
-			if (Math.abs(columnHeights[col] - columnHeights[col - 1]) > 0) {
+
+		for (int col = 1; col < heightArray.length; col++) {
+			if (Math.abs(heightArray[col] - heightArray[col - 1]) > 0) {
 				transitions++;
 			}
 		}
@@ -130,7 +129,7 @@ public class PlayerSkeleton {
 	private int numberOfOccupiedCell(State state) {
 		int[][] field = state.getField();
 		int fullCells = 0;
-		
+
 		for (int row = 0; row < State.ROWS; row++) {
 			for (int col = 0; col < State.COLS; col++) {
 				if (field[row][col] != 0) {
@@ -138,10 +137,10 @@ public class PlayerSkeleton {
 				}
 			}
 		}
-		
+
 		return fullCells;
 	}
-	
+
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
 		return 0;
@@ -174,5 +173,5 @@ public class PlayerSkeleton {
 				result[i] = Arrays.copyOf(field[i], field[i].length);
 		}
 		return result;
-}
+	}
 }
