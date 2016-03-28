@@ -44,6 +44,7 @@ public class PlayerSkeleton {
 
 		if (height + pHeight >= State.ROWS) {
 			hasLost = 1;
+			return;
 		} else {
 			hasLost = 0;
 		}
@@ -177,12 +178,13 @@ public class PlayerSkeleton {
 
 
 	private static Weight featuresWeight;
-	private void initWeights(Weight weights) {
+	public void initWeights(Weight weights) {
 		featuresWeight = weights;
 	}
 
 	//Calculate utility
 	private double getUtility(State state, int[] move) {
+		generateNextField(state, move);
 		double utility = 0;
 
 		utility += featuresWeight.maxHeight() * getMaxHeight();

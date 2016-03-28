@@ -1,8 +1,10 @@
 import java.util.*;
 
-public class Weight {
+public class Weight implements Comparable<Weight> {
   private int totalFeatures;
   private double[] weightsArray;
+
+  int score = 0;
 
   public Weight(int totalFeatures) {
     this.totalFeatures = totalFeatures;
@@ -54,5 +56,10 @@ public class Weight {
 
   public double hasLost() {
     return weightsArray[8];
+  }
+
+  @Override
+  public int compareTo(Weight s) {
+    return s.score - this.score;
   }
 }
