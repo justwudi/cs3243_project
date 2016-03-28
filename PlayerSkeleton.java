@@ -6,6 +6,7 @@ public class PlayerSkeleton {
 	private int[] heightArray;
 	private int rowsCleared = 0;
 	private int totalHoles = 0;
+	private int totalSizeOfHoles = 0;
 	private int totalRowsWithHoles = 0;
 	private int totalColumnsWithHoles = 0;
 	private int hasLost = 0;
@@ -13,6 +14,7 @@ public class PlayerSkeleton {
 	private void resetProperties() {
 		rowsCleared = 0;
 		totalHoles = 0;
+		totalSizeOfHoles = 0;
 		totalRowsWithHoles = 0;
 		totalColumnsWithHoles = 0;
 	}
@@ -118,6 +120,7 @@ public class PlayerSkeleton {
 			}
 		}
 
+		totalSizeOfHoles = emptyPositions.size();
 		totalRowsWithHoles = rowsWithHoles.size();
 		totalColumnsWithHoles = columnsWithHoles.size();
 
@@ -193,6 +196,9 @@ public class PlayerSkeleton {
 		utility += featuresWeight.holes() * getNumberOfHoles();
 		utility += featuresWeight.rowsCleared() * getRowsCleared();
 		utility += featuresWeight.hasLost() * hasLost;
+		utility += featuresWeight.sumDiffs() * getSumDiffs();
+		utility += featuresWeight.totalSizeOfHoles() * getTotalSizeOfHoles();
+		utility += featuresWeight.numberOfRowsWithHoles() * getNumberOfRowsWithHoles();
 
 		return utility;
 	}
@@ -259,21 +265,19 @@ public class PlayerSkeleton {
 		return fullCells;
 	}
 
-	private int sumOfWellsDepth(State state) {
+	private int getSumDiffs() {
 		int depth = 0;
-		int sumOfDepth = 0;
+		int sumOfDiffs = 0;
 		int heightA = 0;
 		int heightB = 0;
 
 		for (int col = 0; col < State.COLS - 1; col++) {
 			heightA = heightArray[col];
 			heightB = heightArray[col+1];
-			depth = Math.abs(heightA - heightB);
-
-			sumOfDepth += depth;
+			sumOfDiffs += Math.abs(heightA - heightB);
 		}
 
-		return sumOfDepth;
+		return sumOfDiffs;
 	}
 
 	// Number of full cells in the column above each hole
@@ -292,13 +296,17 @@ public class PlayerSkeleton {
 	}
 
 	// Number of rows having at least one hole
-	private int getNumberOfRowsWithHoles(State state) {
+	private int getNumberOfRowsWithHoles() {
 		return totalRowsWithHoles;
 	}
 
 	// Get the maximum depth of a well
-	private int getMaxWellDepth(){
+	private int getMaxWellDepth() {
 		return max(getAbsoluteDifference());
+	}
+
+	private int getTotalSizeOfHoles() {
+		return totalSizeOfHoles;
 	}
 
 	//implement this function to have a working system

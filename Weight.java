@@ -10,7 +10,7 @@ public class Weight implements Comparable<Weight> {
     this.totalFeatures = totalFeatures;
     weightsArray = new double[totalFeatures];
     for (int i = 0; i < totalFeatures; i++)
-      weightsArray[i] = Math.random() * 2 - 1;
+      weightsArray[i] = Math.random() * 20 - 10;
   }
 
   public Weight(double[] weights) {
@@ -56,6 +56,14 @@ public class Weight implements Comparable<Weight> {
 
   public double hasLost() {
     return weightsArray[8];
+  }
+
+  public double numberOfRowsWithHoles() {
+    return weightsArray[9];
+  }
+
+  public double totalSizeOfHoles() {
+    return weightsArray[10];
   }
 
   public void mutate() {
