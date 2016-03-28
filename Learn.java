@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class Learn {
-	private final int totalFeatures = 11;
+	private final int totalFeatures = 12;
 	private final double mutation = 0.05;
 	private Weight[] weightPermutations;
 

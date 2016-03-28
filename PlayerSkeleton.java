@@ -198,7 +198,8 @@ public class PlayerSkeleton {
 		utility += featuresWeight.hasLost() * hasLost;
 		utility += featuresWeight.sumDiffs() * getSumDiffs();
 		utility += featuresWeight.totalSizeOfHoles() * getTotalSizeOfHoles();
-		utility += featuresWeight.numberOfRowsWithHoles() * getNumberOfRowsWithHoles();
+		utility += featuresWeight.numOfRowsWithHoles() * getNumOfRowsWithHoles();
+		utility += featuresWeight.numOfWells() * getNumOfWells();
 
 		return utility;
 	}
@@ -295,8 +296,27 @@ public class PlayerSkeleton {
 		return holeDepth;
 	}
 
+	private int getNumOfWells() {
+		int total = 0;
+		for (int col = 0; col < heightArray.length; col++) {
+			if (col == 0) {
+				if (heightArray[col] < heightArray[col + 1]) {
+					total += 1;
+				}
+			} else if (col == heightArray.length - 1) {
+				if (heightArray[col] <  heightArray[col - 1]) {
+					total += 1;
+				}
+			} else if (heightArray[col] <  heightArray[col - 1] && heightArray[col] < heightArray[col + 1]) {
+				total += 1;
+			}
+		}
+
+		return total;
+	}
+
 	// Number of rows having at least one hole
-	private int getNumberOfRowsWithHoles() {
+	private int getNumOfRowsWithHoles() {
 		return totalRowsWithHoles;
 	}
 

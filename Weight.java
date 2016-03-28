@@ -58,12 +58,16 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[8];
   }
 
-  public double numberOfRowsWithHoles() {
+  public double numOfRowsWithHoles() {
     return weightsArray[9];
   }
 
   public double totalSizeOfHoles() {
     return weightsArray[10];
+  }
+
+  public double numOfWells() {
+    return weightsArray[11];
   }
 
   public void mutate() {
