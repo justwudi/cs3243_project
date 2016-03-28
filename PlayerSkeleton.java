@@ -388,4 +388,18 @@ public class PlayerSkeleton {
 
 		return max;
 	}
+
+	public static int min(int[] arr) {
+		if (arr.length <= 0) {
+			return Integer.MAX_VALUE;
+		}
+
+		int min = arr[0];
+
+		for (int i = 1; i < arr.length; i++) {
+			min = Math.min(arr[i], min);
+		}
+
+		return min;
+	}
 }
