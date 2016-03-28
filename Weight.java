@@ -7,7 +7,7 @@ public class Weight {
   public Weight() {
     weightsArray = new double[totalFeatures];
     for (int i = 0; i < totalFeatures; i++)
-      weightsArray[i] = 0;
+      weightsArray[i] = Math.random() * 2 - 1;
   }
 
   public Weight(double[] weights) {
