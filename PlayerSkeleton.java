@@ -172,17 +172,9 @@ public class PlayerSkeleton {
 		MAX_WELL_DEPTH
 	};
 
-	private HashMap<String, Double> featuresWeight = new HashMap<String, Double>();
-	private void initWeights() {
-		featuresWeight.put(MAX_HEIGHT,        -3.0);
-		featuresWeight.put(AVG_HEIGHT,        -3.0);
-		featuresWeight.put(TRANSITIONS,       -1.0);
-		featuresWeight.put(HOLES,             -5.0);
-		featuresWeight.put(SUM_DIFFS,          0.0);
-		featuresWeight.put(ROWS_CLEARED,       5.0);
-		featuresWeight.put(ROWS_WITH_HOLES,   -2.0);
-		featuresWeight.put(MAX_WELL_DEPTH,    -2.0);
-
+	private static Weight featuresWeight;
+	private void initWeights(Weight weights) {
+		featuresWeight = weights;
 	}
 
 	//Calculate utility
@@ -192,11 +184,12 @@ public class PlayerSkeleton {
 		}
 		double utility = 0;
 
-		utility += featuresWeight.get(MAX_HEIGHT) * getMaxHeight();
-		utility += featuresWeight.get(AVG_HEIGHT) * getAverageHeight();
-		utility += featuresWeight.get(TRANSITIONS) * getTransitions();
-		utility += featuresWeight.get(HOLES) * getNumberOfHoles();
-		utility += featuresWeight.get(ROWS_CLEARED) * getRowsCleared();
+		utility += featuresWeight.maxHeight() * getMaxHeight();
+		utility += featuresWeight.avgHeight() * getAverageHeight();
+		utility += featuresWeight.transitions() * getTransitions();
+		utility += featuresWeight.holes() * getNumberOfHoles();
+		utility += featuresWeight.rowsCleared() * getRowsCleared();
+		utility += featuresWeight.hasLost() * hasLost;
 
 		return utility;
 	}

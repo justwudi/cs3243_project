@@ -1,6 +1,6 @@
 import java.util.Random;
 
-public class learn {
+public class Learn {
 	
 	Random rand = new Random(System.currentTimeMillis());
 	
@@ -12,5 +12,15 @@ public class learn {
 		}
 		
 		//return weights;
+	}
+
+	public static void main(String[] args) {
+		// generateRandomWeights(500);
+		// int totalIteration = 100;
+		// for (int iteration = 0; iteration < totalIteration; iteration++) {
+		// 	computeScores();
+		// 	generateOffsprings();
+		// 	nextGen();
+		// }
 	}
 }
