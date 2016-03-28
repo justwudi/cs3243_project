@@ -58,6 +58,12 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[8];
   }
 
+  public void mutate() {
+    int feature = (int) Math.random() * totalFeatures;
+    double percentage = Math.random() * 0.4 - 0.2;
+    weightsArray[feature] = weightsArray[feature] + (percentage * weightsArray[feature]);
+  }
+
   @Override
   public int compareTo(Weight s) {
     return s.score - this.score;

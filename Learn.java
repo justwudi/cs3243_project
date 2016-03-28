@@ -2,8 +2,8 @@ import java.util.*;
 
 public class Learn {
 	private final int totalFeatures = 9;
+	private final double mutation = 0.05;
 	private Weight[] weightPermutations;
-
 
 	private void generateRandomWeights(int numPermutations) {
 		weightPermutations = new Weight[numPermutations];
@@ -44,6 +44,8 @@ public class Learn {
 				double[] offspring = new double[weight1.length];
 
 				for (int i = 0; i < offspring.length; i++) {
+					// offspring[i] = Math.random() > 0.5 ? weight1[i] : weight2[i];
+
 					offspring[i] = (weight1[i] + weight2[i]) / 2;
 				}
 
@@ -63,6 +65,14 @@ public class Learn {
 		}
 	}
 
+	private void mutate() {
+		for (int i = 0; i < weightPermutations.length; i++) {
+			if (Math.random() < mutation) {
+				weightPermutations[i].mutate();
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		Learn l = new Learn();
 		l.generateRandomWeights(500);
@@ -73,6 +83,7 @@ public class Learn {
 			Arrays.sort(l.weightPermutations);
 			Weight[] offsprings = l.generateOffsprings(cutOff);
 			l.nextGen(offsprings);
+			l.mutate();
 			System.out.println("Max "+l.weightPermutations[0].score+" rows.");
 		}
 	}
