@@ -175,8 +175,9 @@ public class PlayerSkeleton {
 		HAS_LOST
 	};
 
-	private static double[] featuresWeight;
-	private void initWeights(double[] weights) {
+
+	private static Weight featuresWeight;
+	private void initWeights(Weight weights) {
 		featuresWeight = weights;
 	}
 
@@ -184,12 +185,12 @@ public class PlayerSkeleton {
 	private double getUtility(State state, int[] move) {
 		double utility = 0;
 
-		utility += featuresWeight[0] * getMaxHeight();
-		utility += featuresWeight[1] * getAverageHeight();
-		utility += featuresWeight[2] * getTransitions();
-		utility += featuresWeight[3] * getNumberOfHoles();
-		utility += featuresWeight[4] * getRowsCleared();
-		utility += featuresWeight[5] * hasLost;
+		utility += featuresWeight.maxHeight() * getMaxHeight();
+		utility += featuresWeight.avgHeight() * getAverageHeight();
+		utility += featuresWeight.transitions() * getTransitions();
+		utility += featuresWeight.holes() * getNumberOfHoles();
+		utility += featuresWeight.rowsCleared() * getRowsCleared();
+		utility += featuresWeight.hasLost() * hasLost;
 
 		return utility;
 	}

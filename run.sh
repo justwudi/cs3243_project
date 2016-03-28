@@ -1,2 +1,4 @@
-javac PlayerSkeleton.java
+if javac PlayerSkeleton.java
+then
 java PlayerSkeleton
+fi
