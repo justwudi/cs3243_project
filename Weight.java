@@ -1,16 +1,18 @@
-import java.util.*
+import java.util.*;
 
 public class Weight {
-  private int totalFeatures = 9;
+  private int totalFeatures;
   private double[] weightsArray;
 
-  public Weight() {
+  public Weight(int totalFeatures) {
+    this.totalFeatures = totalFeatures;
     weightsArray = new double[totalFeatures];
     for (int i = 0; i < totalFeatures; i++)
       weightsArray[i] = Math.random() * 2 - 1;
   }
 
   public Weight(double[] weights) {
+    totalFeatures = weights.length;
     weightsArray = weights;
   }
 
