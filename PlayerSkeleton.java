@@ -4,6 +4,10 @@ public class PlayerSkeleton {
 
 	private int[][] nextField;
 	private int[] heightArray;
+
+	private final int COLS_SQ = State.COLS * State.COLS;
+	private final int SIZE = State.COLS * State.ROWS;
+
 	private int rowsCleared = 0;
 	private int totalHoles = 0;
 	private int totalSizeOfHoles = 0;
@@ -200,6 +204,9 @@ public class PlayerSkeleton {
 		utility += featuresWeight.totalSizeOfHoles() * getTotalSizeOfHoles();
 		utility += featuresWeight.numOfRowsWithHoles() * getNumOfRowsWithHoles();
 		utility += featuresWeight.numOfWells() * getNumOfWells();
+		utility += featuresWeight.maxHeightDiff() * getMaxHeightDiff();
+		utility += featuresWeight.diffVar() * getDiffVar() / COLS_SQ;
+		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
 
 		return utility;
 	}
@@ -327,6 +334,38 @@ public class PlayerSkeleton {
 
 	private int getTotalSizeOfHoles() {
 		return totalSizeOfHoles;
+	}
+
+	private int getMaxHeightDiff() {
+		return max(heightArray) - min(heightArray);
+	}
+
+	// Returns the variance of the difference in the heights of columns
+	private	double getDiffVar() {
+		double diffVar = 0.0;
+		double diffMean = 0.0;
+		int[] differenceArray = getAbsoluteDifference();
+
+		for (int column = 0; column < differenceArray.length; column++) {
+			diffMean += differenceArray[column];
+		}
+		diffMean /= differenceArray.length;
+
+		for (int column = 0; column < differenceArray.length; column++) {
+			diffVar += Math.pow(differenceArray[column] - diffMean, 2);
+		}
+		return diffVar;
+	}
+
+	// Get the height weighted cells
+	private double getHeightWeightedCells() {
+		double weightedCells = 0.0;
+		for (int row = 0; row < max(heightArray); row++) {
+			for (int column = 0; column < nextField[row].length; column++) {
+				weightedCells += nextField[row][column] != 0 ? (row + 1) : 0;
+			}
+		}
+		return weightedCells;
 	}
 
 	//implement this function to have a working system

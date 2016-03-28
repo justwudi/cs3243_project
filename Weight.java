@@ -70,6 +70,18 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[11];
   }
 
+  public double maxHeightDiff() {
+    return weightsArray[12];
+  }
+
+  public double diffVar() {
+    return weightsArray[13];
+  }
+
+  public double heightWeightedCells() {
+    return weightsArray[14];
+  }
+
   public void mutate() {
     int feature = (int) Math.random() * totalFeatures;
     double percentage = Math.random() * 0.4 - 0.2;
