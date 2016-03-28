@@ -8,6 +8,7 @@ public class PlayerSkeleton {
 	private int totalHoles = 0;
 	private int totalRowsWithHoles = 0;
 	private int totalColumnsWithHoles = 0;
+	private int hasLost = 0;
 
 	private void resetProperties() {
 		rowsCleared = 0;
@@ -16,7 +17,7 @@ public class PlayerSkeleton {
 		totalColumnsWithHoles = 0;
 	}
 
-	private boolean generateNextField(State state, int[] move) {
+	private void generateNextField(State state, int[] move) {
 		resetProperties();
 		nextField = deepCopyField(state.getField());
 		heightArray = Arrays.copyOf(state.getTop(), state.getTop().length);
@@ -42,7 +43,9 @@ public class PlayerSkeleton {
 		}
 
 		if (height + pHeight >= State.ROWS) {
-			return false;
+			hasLost = 1;
+		} else {
+			hasLost = 0;
 		}
 
 		// for each column in the piece - fill in the appropriate blocks
@@ -92,8 +95,6 @@ public class PlayerSkeleton {
 		}
 
 		generateHolesHelper();
-
-		return true;
 	}
 
 	private void generateHolesHelper() {
@@ -160,6 +161,7 @@ public class PlayerSkeleton {
 	private final String ROWS_CLEARED    = "ROWS_CLEARED";
 	private final String ROWS_WITH_HOLES = "ROWS_WITH_HOLES";
 	private final String MAX_WELL_DEPTH  = "MAX_WELL_DEPTH";
+	private final String HAS_LOST        = "HAS_LOST";
 
 	private String[] features = {
 		MAX_HEIGHT,
@@ -169,34 +171,25 @@ public class PlayerSkeleton {
 		SUM_DIFFS,
 		ROWS_CLEARED,
 		ROWS_WITH_HOLES,
-		MAX_WELL_DEPTH
+		MAX_WELL_DEPTH,
+		HAS_LOST
 	};
 
-	private HashMap<String, Double> featuresWeight = new HashMap<String, Double>();
-	private void initWeights() {
-		featuresWeight.put(MAX_HEIGHT,        -3.0);
-		featuresWeight.put(AVG_HEIGHT,        -3.0);
-		featuresWeight.put(TRANSITIONS,       -1.0);
-		featuresWeight.put(HOLES,             -5.0);
-		featuresWeight.put(SUM_DIFFS,          0.0);
-		featuresWeight.put(ROWS_CLEARED,       5.0);
-		featuresWeight.put(ROWS_WITH_HOLES,   -2.0);
-		featuresWeight.put(MAX_WELL_DEPTH,    -2.0);
-
+	private static double[] featuresWeight;
+	private void initWeights(double[] weights) {
+		featuresWeight = weights;
 	}
 
 	//Calculate utility
 	private double getUtility(State state, int[] move) {
-		if (!generateNextField(state, move)) {
-			return Double.MIN_VALUE;
-		}
 		double utility = 0;
 
-		utility += featuresWeight.get(MAX_HEIGHT) * getMaxHeight();
-		utility += featuresWeight.get(AVG_HEIGHT) * getAverageHeight();
-		utility += featuresWeight.get(TRANSITIONS) * getTransitions();
-		utility += featuresWeight.get(HOLES) * getNumberOfHoles();
-		utility += featuresWeight.get(ROWS_CLEARED) * getRowsCleared();
+		utility += featuresWeight[0] * getMaxHeight();
+		utility += featuresWeight[1] * getAverageHeight();
+		utility += featuresWeight[2] * getTransitions();
+		utility += featuresWeight[3] * getNumberOfHoles();
+		utility += featuresWeight[4] * getRowsCleared();
+		utility += featuresWeight[5] * hasLost;
 
 		return utility;
 	}
@@ -323,15 +316,15 @@ public class PlayerSkeleton {
 
 	public static void main(String[] args) {
 		State state = new State();
-		new TFrame(state);
+		//new TFrame(state);
 		PlayerSkeleton p = new PlayerSkeleton();
-		p.initWeights();
+		p.initWeights(featuresWeight);
 		while(!state.hasLost()) {
 			state.makeMove(p.pickMove(state, state.legalMoves()));
-			state.draw();
-			state.drawNext(0, 0);
+			// state.draw();
+			// state.drawNext(0, 0);
 			try {
-				Thread.sleep(300);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
