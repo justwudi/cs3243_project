@@ -70,16 +70,20 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[11];
   }
 
-  public double maxHeightDiff() {
+  public double sumOfWellDepths() {
     return weightsArray[12];
   }
 
-  public double diffVar() {
+  public double maxHeightDiff() {
     return weightsArray[13];
   }
 
-  public double heightWeightedCells() {
+  public double diffVar() {
     return weightsArray[14];
+  }
+
+  public double heightWeightedCells() {
+    return weightsArray[15];
   }
 
   public void mutate() {

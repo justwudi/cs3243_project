@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class GALearn {
-	private final int totalFeatures = 15;
+	private final int totalFeatures = 16;
 	private final double mutation = 0.05;
 	private final double averageChance = 0.1;
 	private Weight[] weightPermutations;
@@ -111,6 +111,17 @@ public class GALearn {
 			ga.nextGen(offsprings);
 			ga.mutate(offsprings);
 			System.out.println("Max "+ga.weightPermutations[0].score+" rows.");
+			printArray(ga.weightPermutations[0].getWeights());
 		}
+	}
+
+	private static void printArray(double[] anArray) {
+		for (int i = 0; i < anArray.length; i++) {
+			if (i > 0) {
+				System.out.print(", ");
+			}
+			System.out.print(String.format("%.2f", anArray[i]));
+		}
+		System.out.println();
 	}
 }

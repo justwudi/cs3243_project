@@ -204,6 +204,7 @@ public class PlayerSkeleton {
 		utility += featuresWeight.totalSizeOfHoles() * getTotalSizeOfHoles();
 		utility += featuresWeight.numOfRowsWithHoles() * getNumOfRowsWithHoles();
 		utility += featuresWeight.numOfWells() * getNumOfWells();
+		utility += featuresWeight.sumOfWellDepths() * getSumOfWellDepths();
 		utility += featuresWeight.maxHeightDiff() * getMaxHeightDiff();
 		utility += featuresWeight.diffVar() * getDiffVar() / COLS_SQ;
 		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
@@ -316,6 +317,25 @@ public class PlayerSkeleton {
 				}
 			} else if (heightArray[col] <  heightArray[col - 1] && heightArray[col] < heightArray[col + 1]) {
 				total += 1;
+			}
+		}
+
+		return total;
+	}
+
+	private int getSumOfWellDepths() {
+		int total = 0;
+		for (int col = 0; col < heightArray.length; col++) {
+			if (col == 0) {
+				if (heightArray[col] < heightArray[col + 1]) {
+					total += heightArray[col + 1];
+				}
+			} else if (col == heightArray.length - 1) {
+				if (heightArray[col] <  heightArray[col - 1]) {
+					total += heightArray[col - 1];
+				}
+			} else if (heightArray[col] <  heightArray[col - 1] && heightArray[col] < heightArray[col + 1]) {
+				total += Math.min(heightArray[col - 1], heightArray[col + 1]);
 			}
 		}
 
