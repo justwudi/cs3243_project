@@ -139,10 +139,13 @@ public class Weight implements Comparable<Weight> {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
 
-  public void mutate() {
-    int feature = (int) Math.random() * totalFeatures;
-    double percentage = Math.random() * 0.4 - 0.2;
-    weightsArray[feature] = weightsArray[feature] + (percentage * weightsArray[feature]);
+  public void mutate(double mutation) {
+    for (int feature = 0; feature < weightsArray.length; feature++ ) {
+      if (Math.random() < mutation) {
+        double percentage = Math.random() * 0.4 - 0.2;
+        weightsArray[feature] = weightsArray[feature] + (percentage * weightsArray[feature]);
+      }
+    }
   }
 
   @Override

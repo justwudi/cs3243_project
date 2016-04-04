@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class GALearn extends Learn {
-	private final double mutation = 0.05;
+	private final double mutation = 0.1;
 	private final double averageChance = 0.1;
 
 	private void generateRandomWeights(int numPermutations) {
@@ -76,11 +76,9 @@ public class GALearn extends Learn {
 		}
 	}
 
-	private void mutate(Weight[] offsprings) {
-		for (int i = 0; i < weightPermutations.length - offsprings.length; i++) {
-			if (Math.random() < mutation) {
-				weightPermutations[i].mutate();
-			}
+	private void mutate(Weight[] offsprings, int cutOff) {
+		for (int i = cutOff; i < weightPermutations.length - offsprings.length; i++) {
+			weightPermutations[i].mutate(mutation);
 		}
 	}
 
@@ -94,8 +92,8 @@ public class GALearn extends Learn {
 			Arrays.sort(ga.weightPermutations);
 			Weight[] offsprings = ga.generateOffspringsByCombination(cutOff);
 			ga.nextGen(offsprings);
-			ga.mutate(offsprings);
-			System.out.println("Max "+ga.weightPermutations[0].score+" rows.");
+			ga.mutate(offsprings, cutOff);
+			System.out.println("Iteration " + (iteration + 1) + ": Max "+ga.weightPermutations[0].score+" rows.");
 			System.out.println(ga.weightPermutations[0]);
 		}
 	}
