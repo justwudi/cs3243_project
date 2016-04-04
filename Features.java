@@ -67,39 +67,136 @@ public class Features{
 
 
 
-		private String[] features = {
-			MAX_HEIGHT,
-			AVG_HEIGHT,
-			TRANSITIONS,
-			HOLES,
-			ROWS_CLEARED,
-			ROWS_WITH_HOLES,
-			MAX_WELL_DEPTH,
-			HAS_LOST,
-			FIILED_HOLES,
-			SUM_DIFFS,
-			C1,
-			C2,
-			C3,
-			C4,
-			C5,
-			C6,
-			C7,
-			C8,
-			C9,
-			C10,
-			DIFF_VAR,
-			MAX_HEIGHT_DIFF,
-			H_WEIGHT_CELLS
-		};
-
-
-		
-
-
-
 		//Some Implementations of features
 
+
+		//Minimum column height
+		private int getMinHeight() {
+			return min(heightArray);
+		}
+
+		private double getMeanLessMin() {
+			return getAverageHeight() - getMinHeight();
+		}
+
+		private int getRowTransitions() {
+
+			int sum = 0;
+
+			for (int row = 0; row < max(heightArray); row++) {
+				for (int column = 1; column < nextField[row].length; column++) {
+					sum += ((nextField[row][column] != 0 && nextField[row][column-1] == 0) ||
+							(nextField[row][column] == 0 && nextField[row][column-1] != 0)) ?
+							1 : 0;
+				}
+			}
+			return sum;
+		}
+
+		private int[] getOldHeightArr() {
+			int[][] field = state.getField();
+			int[] oldHeightArr = new int[field[0].length];
+
+			for (int column = 0; column < field[0].length; column++) {
+				int row = field.length - 1;
+				while (row >= 0) {
+					if (field[row][column] != 0) {
+						oldHeightArr[column] = row;
+						break;
+					}
+					if (row == 0) {
+						oldHeightArr[column] = row;
+					}
+				}
+			}
+
+			return oldHeightArr;
+		}
+
+		private int getChangeMaxHeight() {
+			return getMaxHeight() - max(getOldHeightArr);
+		}
+
+		private double getOldAverageHeight() {
+			int total = 0;
+			int[] array = getOldHeightArr();
+
+			for (int col = 0; col < array.length; col++) {
+				total += array[col];
+			}
+
+			return ((double) total) / ((double) array.length);
+		}
+
+		private double getChangeMeanHeight() {
+			return getAverageHeight() - getOldAverageHeight();
+		}
+
+		private void generateOldHolesHelper() {
+			// int[] is an array of [row, col]
+			LinkedList<int[]> emptyPositions = new LinkedList<int[]>();
+			ArrayDeque<int[]> queue = new ArrayDeque<int[]>();
+			HashSet<Integer> rowsWithHoles = new HashSet<Integer>();
+			HashSet<Integer> columnsWithHoles = new HashSet<Integer>();
+			int height, row, col;
+			int[] oldHeightArr = getOldHeightArr();
+			int[][] field = state.getField();
+
+			for (col = 0; col < oldHeightArray.length; col++) {
+				height = oldHeightArray[col];
+
+				for (row = 0; row < height - 1; row++) {
+					if (field[row][col] == 0) {
+						emptyPositions.add(new int[] {row, col});
+						rowsWithHoles.add(row);
+						columnsWithHoles.add(col);
+					}
+				}
+			}
+
+			totalSizeOfHoles = emptyPositions.size();
+			totalRowsWithHoles = rowsWithHoles.size();
+			totalColumnsWithHoles = columnsWithHoles.size();
+
+			while (!emptyPositions.isEmpty()) {
+				boolean foundAdjacentPositions = false;
+				queue.addLast(emptyPositions.remove());
+
+				while (!foundAdjacentPositions) {
+					int[] position = queue.removeFirst();
+					row = position[0];
+					col = position[1];
+					int emptyNeighbours = 0;
+					int[][] neighbours = {
+						{row - 1, col},
+						{row + 1, col},
+						{row, col - 1},
+						{row, col + 1}
+					};
+
+					for (int[] neighbour : neighbours) {
+						if (emptyPositions.contains(neighbour)) {
+							emptyNeighbours += 1;
+							queue.addLast(neighbour);
+							emptyPositions.remove(neighbour);
+						}
+					}
+
+					if (emptyNeighbours == 0) {
+						foundAdjacentPositions = true;
+					}
+				}
+
+				oldTotalHoles += 1;
+			}
+		}
+
+		private int getChangeNumHoles() {
+			return oldTotalHoles;
+		}
+
+
+		//Older Stuff from 28/3/2016
 
 		//Difference between the tallest and shortest column
 		private int getMaxHeightDiff() {
