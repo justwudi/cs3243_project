@@ -1,14 +1,15 @@
-import java.util.*;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.*;
 
 public class GALearn {
-	private final int totalFeatures = 15;
+	private final int totalFeatures = 16;
 	private final double mutation = 0.05;
 	private final double averageChance = 0.1;
 	private Weight[] weightPermutations;
-	
+
 	private void generateRandomWeights(int numPermutations) {
 		weightPermutations = new Weight[numPermutations];
 		for (int i = 0; i < numPermutations; i++) {
@@ -103,10 +104,59 @@ public class GALearn {
 	}
 
 	public static void main(String[] args) {
+		boolean readFile = false;
+		boolean writeFile = true;
+		String readFileName = "data1.txt";
+		String saveFileName = "data2.txt";
+		
+//		if(args.length == 0){
+//			readFile = false;
+//			writeFile = false;
+//		}
+//		else if(args.length == 1){
+//			readFile = false;
+//			saveFileName = args[0];
+//		}
+//		else{
+//			saveFileName = args[0];
+//			readFileName = args[1];
+//		}
+		
 		GALearn ga = new GALearn();
 		ga.generateRandomWeights(500);
 		int cutOff = 10;
-		int totalIteration = 1;
+		int totalIteration = 10;
+		
+		int dataToSave = 500;
+		int dataToRead = 25;
+		
+		if(readFile){
+			try{
+				String content;
+				String[] array;
+				double[] weights = new double[ga.totalFeatures];
+				int index;
+				FileReader fileReader = new FileReader(readFileName);
+				BufferedReader reader = new BufferedReader(fileReader);
+
+				for(int i=0; i<dataToRead; i++){
+					content = reader.readLine();
+					array = content.split(", ");
+					for(int j=0; j<ga.totalFeatures; j++){
+						weights[j] = Double.parseDouble(array[j]);
+					}
+					index = (int)(Math.random() * (500 - dataToRead + 1) + dataToRead - 1);
+					System.out.println(index);
+					ga.weightPermutations[index] = new Weight(weights);
+					printArray(weights);
+				}
+				reader.close();
+			}
+			catch(Exception e){
+				System.out.print("Error reading file.");
+			}
+		}
+		
 		for (int iteration = 0; iteration < totalIteration; iteration++) {
 			ga.computeScores();
 			Arrays.sort(ga.weightPermutations);
@@ -114,30 +164,40 @@ public class GALearn {
 			ga.nextGen(offsprings);
 			ga.mutate(offsprings);
 			System.out.println("Max "+ga.weightPermutations[0].score+" rows.");
+			printArray(ga.weightPermutations[0].getWeights());
 		}
-		String fileName = "data.txt";
-		boolean writeFile = true; 
-		int dataToSave = 25;
+				
 		if(writeFile){
 			String content = "";
-			try{	
-				FileWriter fileReader = new FileWriter(fileName);
-				BufferedWriter writer = new BufferedWriter(fileReader);
-				double[] weights;
-				for(int i=0; i<dataToSave; i++){
-					weights = ga.weightPermutations[i].getWeights();
-					for(int j=0; j<ga.totalFeatures; j++){
-						content = weights[j] + ", ";
-						writer.write(content);
-					}
-					writer.newLine();
+			double[] weights;
+			for(int i=0; i<dataToSave; i++){
+				weights = ga.weightPermutations[i].getWeights();
+				for(int j=0; j<ga.totalFeatures; j++){
+					content += weights[j] + ", ";
 				}
-				
+				content += "\n";
+			}
+
+			try{		
+				FileWriter fileWriter = new FileWriter(saveFileName);
+				BufferedWriter writer = new BufferedWriter(fileWriter);
+				writer.write(content);
 				writer.close();
 			}
 			catch (Exception e){
-				System.out.println("Problem saving file.");
+				System.out.print(e);
+				System.out.println("Error saving file.");
 			}
 		}
+	}
+
+	private static void printArray(double[] anArray) {
+		for (int i = 0; i < anArray.length; i++) {
+			if (i > 0) {
+				System.out.print(", ");
+			}
+			System.out.print(String.format("%.2f", anArray[i]));
+		}
+		System.out.println();
 	}
 }
