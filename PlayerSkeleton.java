@@ -14,6 +14,7 @@ public class PlayerSkeleton {
 	private int totalRowsWithHoles = 0;
 	private int totalColumnsWithHoles = 0;
 	private int hasLost = 0;
+	private int maxWellDepth = 0;
 
 	private void resetProperties() {
 		rowsCleared = 0;
@@ -21,6 +22,7 @@ public class PlayerSkeleton {
 		totalSizeOfHoles = 0;
 		totalRowsWithHoles = 0;
 		totalColumnsWithHoles = 0;
+		maxWellDepth = 0;
 	}
 
 	private void generateNextField(State state, int[] move) {
@@ -325,20 +327,28 @@ public class PlayerSkeleton {
 
 	private int getSumOfWellDepths() {
 		int total = 0;
+		int max = 0;
+		int wellDepth;
 		for (int col = 0; col < heightArray.length; col++) {
 			if (col == 0) {
 				if (heightArray[col] < heightArray[col + 1]) {
-					total += heightArray[col + 1];
+					wellDepth = heightArray[col + 1];
+					total += wellDepth;
+					max = Math.max(max, wellDepth);
 				}
 			} else if (col == heightArray.length - 1) {
 				if (heightArray[col] <  heightArray[col - 1]) {
-					total += heightArray[col - 1];
+					wellDepth = heightArray[col - 1];
+					total += wellDepth;
+					max = Math.max(max, wellDepth);
 				}
 			} else if (heightArray[col] <  heightArray[col - 1] && heightArray[col] < heightArray[col + 1]) {
-				total += Math.min(heightArray[col - 1], heightArray[col + 1]);
+				wellDepth = Math.min(heightArray[col - 1], heightArray[col + 1]);
+				total += wellDepth;
+				max = Math.max(max, wellDepth);
 			}
 		}
-
+		maxWellDepth = max;
 		return total;
 	}
 
@@ -349,7 +359,7 @@ public class PlayerSkeleton {
 
 	// Get the maximum depth of a well
 	private int getMaxWellDepth() {
-		return max(getAbsoluteDifference());
+		return maxWellDepth;
 	}
 
 	private int getTotalSizeOfHoles() {
