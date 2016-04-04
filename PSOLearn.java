@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class PSOLearn {
-  private final int totalFeatures = 16;
+  private final int totalFeatures = 17;
   private Weight[] weightPermutations;
   private final int totalLocalGroups = 10;
   private Weight[][] localGroups = new Weight[totalLocalGroups][];

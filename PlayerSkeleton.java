@@ -210,6 +210,8 @@ public class PlayerSkeleton {
 		utility += featuresWeight.maxHeightDiff() * getMaxHeightDiff();
 		utility += featuresWeight.diffVar() * getDiffVar() / COLS_SQ;
 		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
+		utility += featuresWeight.maxWellDepth() * getMaxWellDepth();
+		utility += featuresWeight.sumOfHoleDepths() * getSumOfHoleDepth();
 
 		return utility;
 	}
@@ -292,18 +294,26 @@ public class PlayerSkeleton {
 	}
 
 	// Number of full cells in the column above each hole
-	private int holeDepth(State state, int row, int col) {
-		int height = heightArray[col];
-		int cellAboveHole = row + 1;
-		int holeDepth = 0;
+	private int getSumOfHoleDepth() {
+		int total = 0;
+		int multiplier;
+		boolean newHole = true;
 
-		while (cellAboveHole < height) {
-			if (nextField[cellAboveHole][col] != 0) {
-				holeDepth++;
+		for (int col = 0; col < heightArray.length; col++) {
+			multiplier = 0;
+			for (int row = 0; row < heightArray[col]; row++) {
+				if (nextField[row][col] == 0) {
+					if (newHole) {
+						newHole = false;
+						multiplier++;
+					}
+				} else {
+					newHole = true;
+					total += multiplier;
+				}
 			}
 		}
-
-		return holeDepth;
+		return total;
 	}
 
 	private int getNumOfWells() {

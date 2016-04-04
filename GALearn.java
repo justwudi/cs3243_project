@@ -1,7 +1,7 @@
 import java.util.*;
 
 public class GALearn {
-	private final int totalFeatures = 16;
+	private final int totalFeatures = 17;
 	private final double mutation = 0.05;
 	private final double averageChance = 0.1;
 	private Weight[] weightPermutations;
