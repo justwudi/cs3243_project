@@ -1,25 +1,67 @@
 import java.util.*;
 
 public class Weight implements Comparable<Weight> {
+  private final double c1 = 2;
+  private final double c2 = 2;
+  private final double vMax = 20;
   private int totalFeatures;
   private double[] weightsArray;
+
+  private double[] velocity;
+  private double[] pBestWeightsArray;
+  private int pBestScore;
+  private double[] lBestWeightsArray;
+  private int lBestScore;
 
   int score = 0;
 
   public Weight(int totalFeatures) {
     this.totalFeatures = totalFeatures;
     weightsArray = new double[totalFeatures];
+    velocity = new double[totalFeatures];
     for (int i = 0; i < totalFeatures; i++)
       weightsArray[i] = Math.random() * 20 - 10;
+    for (int i = 0; i < totalFeatures; i++)
+      velocity[i] = 0;
   }
 
   public Weight(double[] weights) {
     totalFeatures = weights.length;
     weightsArray = weights;
+    velocity = new double[totalFeatures];
+    for (int i = 0; i < totalFeatures; i++)
+      velocity[i] = 0;
   }
 
   public double[] getWeights() {
     return Arrays.copyOf(weightsArray, totalFeatures);
+  }
+
+  public void updatePBest() {
+    if (pBestWeightsArray == null || score > pBestScore) {
+      pBestScore = score;
+      pBestWeightsArray = Arrays.copyOf(weightsArray, totalFeatures);
+    }
+  }
+
+  public void updateLBest(int lBestScore, double[] lBestWeightsArray) {
+    if (this.lBestWeightsArray == null || lBestScore > this.lBestScore) {
+      this.lBestScore = lBestScore;
+      this.lBestWeightsArray = lBestWeightsArray;
+    }
+  }
+
+  public void updatePosition() {
+    for (int i = 0; i < totalFeatures; i++) {
+      velocity[i] += c1 * Math.random() * (pBestWeightsArray[i] - weightsArray[i]) +
+                     c2 * Math.random() * (lBestWeightsArray[i] - weightsArray[i]);
+      if (velocity[i] > vMax) {
+        velocity[i] = vMax;
+      } else if (velocity[i] < -vMax) {
+        velocity[i] = -vMax;
+      }
+      weightsArray[i] += velocity[i];
+    }
   }
 
   public double maxHeight() {
