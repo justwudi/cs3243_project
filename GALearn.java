@@ -1,28 +1,13 @@
 import java.util.*;
 
-public class GALearn {
-	private final int totalFeatures = 17;
+public class GALearn extends Learn {
 	private final double mutation = 0.05;
 	private final double averageChance = 0.1;
-	private Weight[] weightPermutations;
 
 	private void generateRandomWeights(int numPermutations) {
 		weightPermutations = new Weight[numPermutations];
 		for (int i = 0; i < numPermutations; i++) {
 			weightPermutations[i] = new Weight(totalFeatures);
-		}
-	}
-
-	private void computeScores() {
-		for (int i = 0; i < weightPermutations.length; i++) {
-			Weight w = weightPermutations[i];
-			State state = new State();
-			PlayerSkeleton p = new PlayerSkeleton();
-			p.initWeights(w);
-			while (!state.hasLost()) {
-				state.makeMove(p.pickMove(state, state.legalMoves()));
-			}
-			w.score = state.getRowsCleared();
 		}
 	}
 
@@ -113,15 +98,5 @@ public class GALearn {
 			System.out.println("Max "+ga.weightPermutations[0].score+" rows.");
 			printArray(ga.weightPermutations[0].getWeights());
 		}
-	}
-
-	private static void printArray(double[] anArray) {
-		for (int i = 0; i < anArray.length; i++) {
-			if (i > 0) {
-				System.out.print(", ");
-			}
-			System.out.print(String.format("%.2f", anArray[i]));
-		}
-		System.out.println();
 	}
 }

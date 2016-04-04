@@ -1,8 +1,6 @@
 import java.util.*;
 
-public class PSOLearn {
-  private final int totalFeatures = 17;
-  private Weight[] weightPermutations;
+public class PSOLearn extends Learn {
   private final int totalLocalGroups = 10;
   private Weight[][] localGroups = new Weight[totalLocalGroups][];
   private int gBestScore;
@@ -34,20 +32,6 @@ public class PSOLearn {
     }
   }
 
-  private void computeScores() {
-    for (int i = 0; i < weightPermutations.length; i++) {
-      Weight w = weightPermutations[i];
-      State state = new State();
-      PlayerSkeleton p = new PlayerSkeleton();
-      p.initWeights(w);
-      while (!state.hasLost()) {
-        state.makeMove(p.pickMove(state, state.legalMoves()));
-      }
-      w.score = state.getRowsCleared();
-      w.updatePBest();
-    }
-  }
-
   private void updateParticles() {
     for (int i = 0; i < weightPermutations.length; i++) {
       weightPermutations[i].updatePosition();
@@ -74,21 +58,14 @@ public class PSOLearn {
     int totalIteration = 1000;
     for (int iteration = 0; iteration < totalIteration; iteration++) {
       pso.computeScores();
+      for (int i = 0; i < pso.weightPermutations.length; i++) {
+        pso.weightPermutations[i].updatePBest();
+      }
       Arrays.sort(pso.weightPermutations);
       pso.updateLBest();
       pso.updateParticles();
       System.out.println("Max "+pso.weightPermutations[0].score+" rows.");
       printArray(pso.weightPermutations[0].getWeights());
     }
-  }
-
-  private static void printArray(double[] anArray) {
-    for (int i = 0; i < anArray.length; i++) {
-      if (i > 0) {
-        System.out.print(", ");
-      }
-      System.out.print(String.format("%.2f", anArray[i]));
-    }
-    System.out.println();
   }
 }
