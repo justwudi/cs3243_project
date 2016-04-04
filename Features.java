@@ -3,31 +3,53 @@ public class Features{
 	//Does not include the helper functions, just a list of features and their
 	//implementations, refer to PlayerSkeleton.java
 	public static void main(String[] args) {
-			
+		
+
+		//Height Features
 		private final String MAX_HEIGHT      = "MAX_HEIGHT";
 		private final String AVG_HEIGHT      = "AVG_HEIGHT";
-		private final String TRANSITIONS     = "TRANSITIONS";
-		private final String HOLES           = "HOLES";
-		private final String ROWS_CLEARED    = "ROWS_CLEARED";
-		private final String ROWS_WITH_HOLES = "ROWS_WITH_HOLES";
-		private final String MAX_WELL_DEPTH  = "MAX_WELL_DEPTH";
-		private final String HAS_LOST        = "HAS_LOST";
-		private final String FILLED_HOLES    = "FILLED_HOLES";
-		private final String SUM_DIFFS 		 = "SUM_DIFFS";
-		private final String C1				 = "C1_HEIGHT"
-		private final String C2				 = "C2_HEIGHT"
-		private final String C3				 = "C3_HEIGHT"
-		private final String C4				 = "C4_HEIGHT"
-		private final String C5				 = "C5_HEIGHT"
-		private final String C6				 = "C6_HEIGHT"
-		private final String C7				 = "C7_HEIGHT"
-		private final String C8				 = "C8_HEIGHT"
-		private final String C9				 = "C9_HEIGHT"
-		private final String C10			 = "C10_HEIGHT"
-		private final String DIFF_VAR		 = "VARIANCE_OF_HT_DIFFS"
-		private final String MAX_HEIGHT_DIFF = "MAX_HEIGHT_DIFF"
-		private final String H_WEIGHT_CELLS  = "HEIGHT_WEIGHTED_CELLS"
+		private final String LANDING_HEIGHT	 = "LANDING_HEIGHT";
+		private final String C1				 = "C1_HEIGHT";
+		private final String C2				 = "C2_HEIGHT";
+		private final String C3				 = "C3_HEIGHT";
+		private final String C4				 = "C4_HEIGHT";
+		private final String C5				 = "C5_HEIGHT";
+		private final String C6				 = "C6_HEIGHT";
+		private final String C7				 = "C7_HEIGHT";
+		private final String C8				 = "C8_HEIGHT";
+		private final String C9				 = "C9_HEIGHT";
+		private final String C10			 = "C10_HEIGHT";
 
+
+		//Smoothness Features
+		private final String TRANSITIONS     = "TRANSITIONS";
+		private final String SUM_DIFFS 		 = "SUM_DIFFS";
+		private final String DIFF_VAR		 = "VARIANCE_OF_HT_DIFFS";
+		private final String MAX_HEIGHT_DIFF = "MAX_HEIGHT_DIFF";
+
+
+		//Hole Features
+		private final String HOLES           = "HOLES";
+		private final String ROWS_WITH_HOLES = "ROWS_WITH_HOLES";
+		private	final String SUM_HOLE_DEPTH	 = "SUM_HOLE_DEPTH";
+
+
+		//Well Features
+		private final String MAX_WELL_DEPTH  = "MAX_WELL_DEPTH";
+		private final String SUM_WELL_DEPTH  = "SUM_WELL_DEPTH";
+
+
+		//Scoring Features
+		private final String HAS_LOST        = "HAS_LOST";
+		private final String ROWS_CLEARED    = "ROWS_CLEARED";
+		private final String ERODED_CELLS	 = "ERODED_CELLS";
+
+
+		//Other Features
+		private final String H_WEIGHT_CELLS  = "HEIGHT_WEIGHTED_CELLS";
+		private final String OCCUPIED_CELLS	 = "OCCUPIED_CELLS";
+
+		
 		private String[] features = {
 			MAX_HEIGHT,
 			AVG_HEIGHT,
@@ -54,6 +76,15 @@ public class Features{
 			H_WEIGHT_CELLS
 		};
 
+
+		
+
+
+
+		//Some Implementations of features
+
+
+		//Difference between the tallest and shortest column
 		private int getMaxHeightDiff() {
 			return max(heightArray) - min(heightArray);
 		}
