@@ -195,6 +195,7 @@ public class PlayerSkeleton {
 	private double getUtility(State state, int[] move) {
 		generateNextField(state, move);
 		double utility = 0;
+		double[] columnWeights = featuresWeight.getColumnWeights();
 
 		utility += featuresWeight.maxHeight() * getMaxHeight();
 		utility += featuresWeight.avgHeight() * getAverageHeight();
@@ -212,6 +213,10 @@ public class PlayerSkeleton {
 		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
 		utility += featuresWeight.maxWellDepth() * getMaxWellDepth();
 		utility += featuresWeight.sumOfHoleDepths() * getSumOfHoleDepth();
+
+		for (int col = 0; col < heightArray.length; col++) {
+			utility += heightArray[col] * columnWeights[col];
+		}
 
 		return utility;
 	}

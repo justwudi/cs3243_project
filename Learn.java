@@ -1,5 +1,5 @@
 public abstract class Learn {
-  protected final int totalFeatures = 17;
+  protected final int totalFeatures = 16;
   protected Weight[] weightPermutations;
 
   protected void computeScores() {

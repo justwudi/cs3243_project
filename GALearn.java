@@ -96,7 +96,7 @@ public class GALearn extends Learn {
 			ga.nextGen(offsprings);
 			ga.mutate(offsprings);
 			System.out.println("Max "+ga.weightPermutations[0].score+" rows.");
-			printArray(ga.weightPermutations[0].getWeights());
+			System.out.println(ga.weightPermutations[0]);
 		}
 	}
 }

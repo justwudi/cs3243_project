@@ -44,7 +44,7 @@ public class PSOLearn extends Learn {
       Arrays.sort(group);
       Weight lBest = group[0];
       int lBestScore = lBest.score;
-      double[] lBestWeightsArray = Arrays.copyOf(lBest.getWeights(), totalFeatures);
+      double[] lBestWeightsArray = Arrays.copyOf(lBest.getWeights(), totalFeatures + State.COLS);
 
       for (int i = 0; i < group.length; i++) {
         group[i].updateLBest(lBestScore, lBestWeightsArray);

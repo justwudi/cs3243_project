@@ -17,32 +17,33 @@ public class Weight implements Comparable<Weight> {
 
   public Weight(int totalFeatures) {
     this.totalFeatures = totalFeatures;
-    weightsArray = new double[totalFeatures];
-    velocity = new double[totalFeatures];
-    for (int i = 0; i < totalFeatures; i++)
+    int arrayLength = totalFeatures + State.COLS;
+    weightsArray = new double[arrayLength];
+    velocity = new double[arrayLength];
+    for (int i = 0; i < arrayLength; i++)
       weightsArray[i] = Math.random() * 20 - 10;
-    for (int i = 0; i < totalFeatures; i++)
+    for (int i = 0; i < arrayLength; i++)
       velocity[i] = 0;
     setHasLost(-10);
   }
 
   public Weight(double[] weights) {
-    totalFeatures = weights.length;
+    totalFeatures = weights.length - State.COLS;
     weightsArray = weights;
-    velocity = new double[totalFeatures];
-    for (int i = 0; i < totalFeatures; i++)
+    velocity = new double[weights.length];
+    for (int i = 0; i < weights.length; i++)
       velocity[i] = 0;
     setHasLost(-10);
   }
 
   public double[] getWeights() {
-    return Arrays.copyOf(weightsArray, totalFeatures);
+    return Arrays.copyOf(weightsArray, weightsArray.length);
   }
 
   public void updatePBest() {
     if (pBestWeightsArray == null || score > pBestScore) {
       pBestScore = score;
-      pBestWeightsArray = Arrays.copyOf(weightsArray, totalFeatures);
+      pBestWeightsArray = Arrays.copyOf(weightsArray, weightsArray.length);
     }
   }
 
@@ -54,7 +55,7 @@ public class Weight implements Comparable<Weight> {
   }
 
   public void updatePosition() {
-    for (int i = 0; i < totalFeatures; i++) {
+    for (int i = 0; i < weightsArray.length; i++) {
       velocity[i] += c1 * Math.random() * (pBestWeightsArray[i] - weightsArray[i]) +
                      c2 * Math.random() * (lBestWeightsArray[i] - weightsArray[i]);
       if (velocity[i] > vMax) {
@@ -90,7 +91,7 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[5];
   }
 
-  public double rowsWithHoles() {
+  public double sumOfHoleDepths() {
     return weightsArray[6];
   }
 
@@ -134,8 +135,8 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[15];
   }
 
-  public double sumOfHoleDepths() {
-    return weightsArray[16];
+  public double[] getColumnWeights() {
+    return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
 
   public void mutate() {
@@ -147,5 +148,32 @@ public class Weight implements Comparable<Weight> {
   @Override
   public int compareTo(Weight s) {
     return s.score - this.score;
+  }
+
+  @Override
+  public String toString() {
+    String output =
+      "Max Height                     " + String.format("%8.3f", weightsArray[0])  + "\n" +
+      "Average Height                 " + String.format("%8.3f", weightsArray[1])  + "\n" +
+      "Transitions                    " + String.format("%8.3f", weightsArray[2])  + "\n" +
+      "Number of Holes                " + String.format("%8.3f", weightsArray[3])  + "\n" +
+      "Sum of Differences             " + String.format("%8.3f", weightsArray[4])  + "\n" +
+      "Rows Cleared                   " + String.format("%8.3f", weightsArray[5])  + "\n" +
+      "Sum of Hole Depths             " + String.format("%8.3f", weightsArray[6])  + "\n" +
+      "Max Well Depth                 " + String.format("%8.3f", weightsArray[7])  + "\n" +
+      "Has Lost                       " + String.format("%8.3f", weightsArray[8])  + "\n" +
+      "Number of Rows with Holes      " + String.format("%8.3f", weightsArray[9])  + "\n" +
+      "Total Size of Holes            " + String.format("%8.3f", weightsArray[10]) + "\n" +
+      "Number of Wells                " + String.format("%8.3f", weightsArray[11]) + "\n" +
+      "Sum of Well Depths             " + String.format("%8.3f", weightsArray[12]) + "\n" +
+      "Max Height Difference          " + String.format("%8.3f", weightsArray[13]) + "\n" +
+      "Difference Variance            " + String.format("%8.3f", weightsArray[14]) + "\n" +
+      "Height Weighted Cells          " + String.format("%8.3f", weightsArray[15]) + "\n";
+
+    for (int i = 0; i < State.COLS; i++) {
+      output += "Column " + i + "                       " + String.format("%8.3f", weightsArray[totalFeatures + i]) + "\n";
+    }
+
+    return output;
   }
 }
