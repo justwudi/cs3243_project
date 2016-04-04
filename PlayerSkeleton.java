@@ -15,6 +15,7 @@ public class PlayerSkeleton {
 	private int totalColumnsWithHoles = 0;
 	private int hasLost = 0;
 	private int maxWellDepth = 0;
+	private int landingHeight = 0;
 
 	private void resetProperties() {
 		rowsCleared = 0;
@@ -23,6 +24,7 @@ public class PlayerSkeleton {
 		totalRowsWithHoles = 0;
 		totalColumnsWithHoles = 0;
 		maxWellDepth = 0;
+		landingHeight = 0;
 	}
 
 	private void generateNextField(State state, int[] move) {
@@ -58,8 +60,9 @@ public class PlayerSkeleton {
 		}
 
 		// for each column in the piece - fill in the appropriate blocks
-		for(int col = 0; col < pWidth; col++) {
+		for (int col = 0; col < pWidth; col++) {
 			int startRow = height + pBottom[col];
+			landingHeight = Math.min(landingHeight, startRow);
 			int endRow = height + pTop[col];
 
 			// from bottom to top of brick
@@ -213,6 +216,7 @@ public class PlayerSkeleton {
 		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
 		utility += featuresWeight.maxWellDepth() * getMaxWellDepth();
 		utility += featuresWeight.sumOfHoleDepths() * getSumOfHoleDepth();
+		utility += featuresWeight.landingHeight() * getLandingHeight();
 
 		for (int col = 0; col < heightArray.length; col++) {
 			utility += heightArray[col] * columnWeights[col];
@@ -411,6 +415,10 @@ public class PlayerSkeleton {
 			}
 		}
 		return weightedCells;
+	}
+
+	private double getLandingHeight() {
+		return landingHeight;
 	}
 
 	//implement this function to have a working system

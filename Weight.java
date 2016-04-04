@@ -135,6 +135,10 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[15];
   }
 
+  public double landingHeight() {
+    return weightsArray[16];
+  }
+
   public double[] getColumnWeights() {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
