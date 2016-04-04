@@ -11,7 +11,6 @@ public class GALearn {
 	private Weight[] weightPermutations;
 
 	private void generateRandomWeights(int numPermutations) {
-		weightPermutations = new Weight[numPermutations];
 		for (int i = 0; i < numPermutations; i++) {
 			weightPermutations[i] = new Weight(totalFeatures);
 		}
@@ -107,7 +106,7 @@ public class GALearn {
 		boolean readFile = false;
 		boolean writeFile = true;
 		String readFileName = "data1.txt";
-		String saveFileName = "data2.txt";
+		String saveFileName = "data1.txt";
 		
 //		if(args.length == 0){
 //			readFile = false;
@@ -123,21 +122,40 @@ public class GALearn {
 //		}
 		
 		GALearn ga = new GALearn();
-		ga.generateRandomWeights(500);
 		int cutOff = 10;
 		int totalIteration = 10;
 		
 		int dataToSave = 500;
 		int dataToRead = 25;
 		
+		ga.weightPermutations = new Weight[500];
+		
+		if(!readFile){
+			ga.generateRandomWeights(500);
+		}
 		if(readFile){
 			try{
 				String content;
 				String[] array;
 				double[] weights = new double[ga.totalFeatures];
 				int index;
-				FileReader fileReader = new FileReader(readFileName);
+				
+				FileReader fileReader = new FileReader(saveFileName);
 				BufferedReader reader = new BufferedReader(fileReader);
+
+				for(int i=0; i<500; i++){
+					content = reader.readLine();
+					array = content.split(", ");
+					for(int j=0; j<ga.totalFeatures; j++){
+						weights[j] = Double.parseDouble(array[j]);
+					}
+					//index = (int)(Math.random() * (500 - dataToRead + 1) + dataToRead - 1);
+					ga.weightPermutations[i] = new Weight(weights);
+				}
+				reader.close();
+				
+				fileReader = new FileReader(readFileName);
+				reader = new BufferedReader(fileReader);
 
 				for(int i=0; i<dataToRead; i++){
 					content = reader.readLine();
@@ -146,9 +164,7 @@ public class GALearn {
 						weights[j] = Double.parseDouble(array[j]);
 					}
 					index = (int)(Math.random() * (500 - dataToRead + 1) + dataToRead - 1);
-					System.out.println(index);
 					ga.weightPermutations[index] = new Weight(weights);
-					printArray(weights);
 				}
 				reader.close();
 			}
