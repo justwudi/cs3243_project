@@ -70,27 +70,10 @@ public class Features{
 		//Some Implementations of features
 
 
-		//Minimum column height
-		private int getMinHeight() {
-			return min(heightArray);
-		}
+
 
 		private double getMeanLessMin() {
 			return getAverageHeight() - getMinHeight();
-		}
-
-		private int getRowTransitions() {
-
-			int sum = 0;
-
-			for (int row = 0; row < max(heightArray); row++) {
-				for (int column = 1; column < nextField[row].length; column++) {
-					sum += ((nextField[row][column] != 0 && nextField[row][column-1] == 0) ||
-							(nextField[row][column] == 0 && nextField[row][column-1] != 0)) ?
-							1 : 0;
-				}
-			}
-			return sum;
 		}
 
 		private int[] getOldHeightArr() {

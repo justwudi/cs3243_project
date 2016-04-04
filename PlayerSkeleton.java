@@ -217,6 +217,8 @@ public class PlayerSkeleton {
 		utility += featuresWeight.maxWellDepth() * getMaxWellDepth();
 		utility += featuresWeight.sumOfHoleDepths() * getSumOfHoleDepth();
 		utility += featuresWeight.landingHeight() * getLandingHeight();
+		utility += featuresWeight.minHeight() * getMinHeight();
+		utility += featuresWeight.rowTransitions() * getRowTransitions();
 
 		for (int col = 0; col < heightArray.length; col++) {
 			utility += heightArray[col] * columnWeights[col];
@@ -228,6 +230,11 @@ public class PlayerSkeleton {
 	// Array of columns, each index corresponds to the column's height
 	private int getMaxHeight() {
 		return max(heightArray);
+	}
+
+	// Minimum column height
+	private int getMinHeight() {
+		return min(heightArray);
 	}
 
 	private double getAverageHeight() {
@@ -419,6 +426,17 @@ public class PlayerSkeleton {
 
 	private double getLandingHeight() {
 		return landingHeight;
+	}
+
+	private int getRowTransitions() {
+		int sum = 0;
+
+		for (int row = 0; row < max(heightArray); row++) {
+			for (int column = 1; column < nextField[row].length; column++) {
+				sum += (nextField[row][column] == 0 ^ nextField[row][column-1] == 0) ? 1 : 0;
+			}
+		}
+		return sum;
 	}
 
 	//implement this function to have a working system

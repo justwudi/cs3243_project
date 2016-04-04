@@ -139,6 +139,14 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[16];
   }
 
+  public double minHeight() {
+    return weightsArray[17];
+  }
+
+  public double rowTransitions() {
+    return weightsArray[18];
+  }
+
   public double[] getColumnWeights() {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
@@ -175,7 +183,10 @@ public class Weight implements Comparable<Weight> {
       "Sum of Well Depths             " + String.format("%8.3f", weightsArray[12]) + "\n" +
       "Max Height Difference          " + String.format("%8.3f", weightsArray[13]) + "\n" +
       "Difference Variance            " + String.format("%8.3f", weightsArray[14]) + "\n" +
-      "Height Weighted Cells          " + String.format("%8.3f", weightsArray[15]) + "\n";
+      "Height Weighted Cells          " + String.format("%8.3f", weightsArray[15]) + "\n" +
+      "Landing Height                 " + String.format("%8.3f", weightsArray[16]) + "\n" +
+      "Min Height                     " + String.format("%8.3f", weightsArray[17]) + "\n" +
+      "Row Transitions                " + String.format("%8.3f", weightsArray[18]) + "\n";
 
     for (int i = 0; i < State.COLS; i++) {
       output += "Column " + i + "                       " + String.format("%8.3f", weightsArray[totalFeatures + i]) + "\n";
