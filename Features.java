@@ -26,7 +26,7 @@ public class Features{
 		private final String SUM_DIFFS 		 = "SUM_DIFFS";
 		private final String DIFF_VAR		 = "VARIANCE_OF_HT_DIFFS";
 		private final String MAX_HEIGHT_DIFF = "MAX_HEIGHT_DIFF";
-
+		private final String ROW_TRANSITIONS = "ROW_TRANSITIONS";
 
 		//Hole Features
 		private final String HOLES           = "HOLES";
@@ -50,6 +50,23 @@ public class Features{
 		private final String OCCUPIED_CELLS	 = "OCCUPIED_CELLS";
 
 		
+		//Summarized Optimal Feature Weights
+		(HOLES, -190)
+		(LANDING_HEIGHT, -51)
+		(TRANSITIONS, -46)
+		(AVG_HEIGHT, 6)
+		(ROW_TRANSITIONS, -38)
+		(SUM_WELL_DEPTH, -73)
+		(MAX_HEIGHT_DIFF, -60)
+		(CHANGE_MAX_HEIGHT, -50)
+		(CHANGE_HOLES, -25)
+		(CHANGE_MEAN_HEIGHT, -17)
+		(MEAN_LESS_MIN, -60)
+		(MIN_HEIGHT, -41)
+		(SUM_DIFFS, 19)
+
+
+
 		private String[] features = {
 			MAX_HEIGHT,
 			AVG_HEIGHT,
