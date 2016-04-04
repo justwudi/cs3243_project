@@ -1,5 +1,7 @@
+import java.util.concurrent.TimeUnit;
+
 public abstract class Learn {
-  protected final int totalFeatures = 19;
+  protected final int totalFeatures = 23;
   protected Weight[] weightPermutations;
 
   protected void computeScores() {
@@ -23,5 +25,13 @@ public abstract class Learn {
       System.out.print(String.format("%.2f", anArray[i]));
     }
     System.out.println();
+  }
+
+  protected static void printTimeMillis(long millis) {
+    System.out.println(String.format("elapsed time %02d min, %02d sec\n",
+      TimeUnit.MILLISECONDS.toMinutes(millis),
+      TimeUnit.MILLISECONDS.toSeconds(millis) -
+      TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+    ));
   }
 }

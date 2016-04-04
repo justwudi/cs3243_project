@@ -83,11 +83,13 @@ public class GALearn extends Learn {
 	}
 
 	public static void main(String[] args) {
+		long startTime, endTime;
 		GALearn ga = new GALearn();
 		ga.generateRandomWeights(500);
 		int cutOff = 10;
 		int totalIteration = 1000;
 		for (int iteration = 0; iteration < totalIteration; iteration++) {
+			startTime = System.currentTimeMillis();
 			ga.computeScores();
 			Arrays.sort(ga.weightPermutations);
 			Weight[] offsprings = ga.generateOffspringsByCombination(cutOff);
@@ -95,6 +97,8 @@ public class GALearn extends Learn {
 			ga.mutate(offsprings, cutOff);
 			System.out.println("Iteration " + (iteration + 1) + ": Max "+ga.weightPermutations[0].score+" rows.");
 			System.out.println(ga.weightPermutations[0]);
+			endTime = System.currentTimeMillis();
+			ga.printTimeMillis(endTime - startTime);
 		}
 	}
 }

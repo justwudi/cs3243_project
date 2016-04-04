@@ -2,11 +2,18 @@ import java.util.*;
 
 public class PlayerSkeleton {
 
-	private int[][] nextField;
-	private int[] heightArray;
-
 	private final int COLS_SQ = State.COLS * State.COLS;
 	private final int SIZE = State.COLS * State.ROWS;
+
+	// Current state properties
+	private double currentAverageHeight;
+	private int currentMaxHeight;
+	private int currentMinHeight;
+	private int currentHoles;
+
+	// Next state properties
+	private int[][] nextField;
+	private int[] heightArray;
 
 	private int rowsCleared = 0;
 	private int totalHoles = 0;
@@ -132,38 +139,7 @@ public class PlayerSkeleton {
 		totalSizeOfHoles = emptyPositions.size();
 		totalRowsWithHoles = rowsWithHoles.size();
 		totalColumnsWithHoles = columnsWithHoles.size();
-
-		while (!emptyPositions.isEmpty()) {
-			boolean foundAdjacentPositions = false;
-			queue.addLast(emptyPositions.remove());
-
-			while (!foundAdjacentPositions) {
-				int[] position = queue.removeFirst();
-				row = position[0];
-				col = position[1];
-				int emptyNeighbours = 0;
-				int[][] neighbours = {
-					{row - 1, col},
-					{row + 1, col},
-					{row, col - 1},
-					{row, col + 1}
-				};
-
-				for (int[] neighbour : neighbours) {
-					if (emptyPositions.contains(neighbour)) {
-						emptyNeighbours += 1;
-						queue.addLast(neighbour);
-						emptyPositions.remove(neighbour);
-					}
-				}
-
-				if (emptyNeighbours == 0) {
-					foundAdjacentPositions = true;
-				}
-			}
-
-			totalHoles += 1;
-		}
+		totalHoles = getDistinctHoles(emptyPositions);
 	}
 
 	private final String MAX_HEIGHT      = "MAX_HEIGHT";
@@ -219,6 +195,10 @@ public class PlayerSkeleton {
 		utility += featuresWeight.landingHeight() * getLandingHeight();
 		utility += featuresWeight.minHeight() * getMinHeight();
 		utility += featuresWeight.rowTransitions() * getRowTransitions();
+		utility += featuresWeight.averageLessMin() * getAverageLessMin();
+		utility += featuresWeight.changeMaxHeight() * getChangeMaxHeight();
+		utility += featuresWeight.changeAverageHeight() * getChangeAverageHeight();
+		utility += featuresWeight.changeNumHoles() * getChangeNumHoles();
 
 		for (int col = 0; col < heightArray.length; col++) {
 			utility += heightArray[col] * columnWeights[col];
@@ -238,13 +218,23 @@ public class PlayerSkeleton {
 	}
 
 	private double getAverageHeight() {
-		int total = 0;
+		return average(heightArray);
+	}
 
-		for (int col = 0; col < heightArray.length; col++) {
-			total += heightArray[col];
-		}
+	private double getAverageLessMin() {
+		return getAverageHeight() - getMinHeight();
+	}
 
-		return ((double) total) / ((double) heightArray.length);
+	private int getChangeMaxHeight() {
+		return getMaxHeight() - currentMaxHeight;
+	}
+
+	private double getChangeAverageHeight() {
+		return getAverageHeight() - currentAverageHeight;
+	}
+
+	private int getChangeNumHoles() {
+		return totalHoles - currentHoles;
 	}
 
 	// Array of columns - 1, each index corresponds to the difference between that column
@@ -439,10 +429,76 @@ public class PlayerSkeleton {
 		return sum;
 	}
 
+	private void generateCurrentStateProperties(State state) {
+		int[][] currentField = state.getField();
+		int[] currentHeightArray = state.getTop();
+
+		currentAverageHeight = average(currentHeightArray);
+		currentMaxHeight = max(currentHeightArray);
+		currentMinHeight = min(currentHeightArray);
+
+		// Get current number of holes
+		LinkedList<int[]> emptyPositions = new LinkedList<int[]>();
+		int height, row, col;
+
+		for (col = 0; col < currentHeightArray.length; col++) {
+			height = currentHeightArray[col];
+
+			for (row = 0; row < height - 1; row++) {
+				if (currentField[row][col] == 0) {
+					emptyPositions.add(new int[] {row, col});
+				}
+			}
+		}
+
+		currentHoles = getDistinctHoles(emptyPositions);
+	}
+
+	private int getDistinctHoles(LinkedList<int[]> emptyPositions) {
+		int holes = 0, row, col;
+		ArrayDeque<int[]> queue = new ArrayDeque<int[]>();
+
+		while (!emptyPositions.isEmpty()) {
+			boolean foundAdjacentPositions = false;
+			queue.addLast(emptyPositions.remove());
+
+			while (!foundAdjacentPositions) {
+				int[] position = queue.removeFirst();
+				row = position[0];
+				col = position[1];
+				int emptyNeighbours = 0;
+				int[][] neighbours = {
+					{row - 1, col},
+					{row + 1, col},
+					{row, col - 1},
+					{row, col + 1}
+				};
+
+				for (int[] neighbour : neighbours) {
+					if (emptyPositions.contains(neighbour)) {
+						emptyNeighbours += 1;
+						queue.addLast(neighbour);
+						emptyPositions.remove(neighbour);
+					}
+				}
+
+				if (emptyNeighbours == 0) {
+					foundAdjacentPositions = true;
+				}
+			}
+
+			holes += 1;
+		}
+
+		return holes;
+	}
+
 	//implement this function to have a working system
 	public int pickMove(State state, int[][] legalMoves) {
 		int moveIndex = 0;
 		Double score = getUtility(state, legalMoves[0]);
+
+		generateCurrentStateProperties(state);
 
 		for (int move = 1; move < legalMoves.length; move++) {
 			Double newScore = getUtility(state, legalMoves[move]);
@@ -511,5 +567,15 @@ public class PlayerSkeleton {
 		}
 
 		return min;
+	}
+
+	public static double average(int[] arr) {
+		int total = 0;
+
+		for (int i = 0; i < arr.length; i++) {
+			total += arr[i];
+		}
+
+		return ((double) total) / ((double) arr.length);
 	}
 }

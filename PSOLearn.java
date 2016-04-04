@@ -64,8 +64,8 @@ public class PSOLearn extends Learn {
       Arrays.sort(pso.weightPermutations);
       pso.updateLBest();
       pso.updateParticles();
-      System.out.println("Max "+pso.weightPermutations[0].score+" rows.");
-      printArray(pso.weightPermutations[0].getWeights());
+      System.out.println("Iteration " + (iteration + 1) + ": Max "+pso.weightPermutations[0].score+" rows.");
+      System.out.println(pso.weightPermutations[0]);
     }
   }
 }

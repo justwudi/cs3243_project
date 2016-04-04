@@ -147,6 +147,22 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[18];
   }
 
+  public double averageLessMin() {
+    return weightsArray[19];
+  }
+
+  public double changeMaxHeight() {
+    return weightsArray[20];
+  }
+
+  public double changeAverageHeight() {
+    return weightsArray[21];
+  }
+
+  public double changeNumHoles() {
+    return weightsArray[22];
+  }
+
   public double[] getColumnWeights() {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
@@ -186,7 +202,11 @@ public class Weight implements Comparable<Weight> {
       "Height Weighted Cells          " + String.format("%8.3f", weightsArray[15]) + "\n" +
       "Landing Height                 " + String.format("%8.3f", weightsArray[16]) + "\n" +
       "Min Height                     " + String.format("%8.3f", weightsArray[17]) + "\n" +
-      "Row Transitions                " + String.format("%8.3f", weightsArray[18]) + "\n";
+      "Row Transitions                " + String.format("%8.3f", weightsArray[18]) + "\n" +
+      "Average Less Mean              " + String.format("%8.3f", weightsArray[19]) + "\n" +
+      "Change Max Height              " + String.format("%8.3f", weightsArray[20]) + "\n" +
+      "Change Average Height          " + String.format("%8.3f", weightsArray[21]) + "\n" +
+      "Change Number of Holes         " + String.format("%8.3f", weightsArray[22]) + "\n";
 
     for (int i = 0; i < State.COLS; i++) {
       output += "Column " + i + "                       " + String.format("%8.3f", weightsArray[totalFeatures + i]) + "\n";
