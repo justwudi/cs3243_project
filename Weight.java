@@ -13,6 +13,8 @@ public class Weight implements Comparable<Weight> {
   private double[] lBestWeightsArray;
   private int lBestScore;
 
+  private Random rand = new Random();
+
   int score = 0;
 
   public Weight(int totalFeatures) {
@@ -167,10 +169,10 @@ public class Weight implements Comparable<Weight> {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
   }
 
-  public void mutate(double mutation) {
+  public void mutate(int mutation) {
     for (int feature = 0; feature < weightsArray.length; feature++ ) {
-      if (Math.random() < mutation) {
-        double percentage = Math.random() * 0.4 - 0.2;
+      if (rand.nextInt(100) < mutation) {
+        double percentage = 0.01 * (rand.nextInt(40) - 20);
         weightsArray[feature] = weightsArray[feature] + (percentage * weightsArray[feature]);
       }
     }

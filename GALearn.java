@@ -1,8 +1,9 @@
 import java.util.*;
 
 public class GALearn extends Learn {
-	private final double mutation = 0.1;
-	private final double averageChance = 0.1;
+	Random rand = new Random();
+	private final int mutation = 10;
+	private final int averageChance = 10;
 
 	private void generateRandomWeights(int numPermutations) {
 		weightPermutations = new Weight[numPermutations];
@@ -53,8 +54,8 @@ public class GALearn extends Learn {
 				double[] offspring = new double[weight1.length];
 
 				for (int i = 0; i < offspring.length; i++) {
-					if (Math.random() > averageChance) {
-						offspring[i] = Math.random() > 0.5 ? weight1[i] : weight2[i];
+					if (rand.nextInt(100) > averageChance) {
+						offspring[i] = rand.nextInt(100) > 50 ? weight1[i] : weight2[i];
 					} else {
 						offspring[i] = (weight1[i] + weight2[i]) / 2;
 					}
