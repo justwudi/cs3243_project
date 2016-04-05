@@ -22,7 +22,7 @@ public class PlayerSkeleton {
 	private int totalColumnsWithHoles = 0;
 	private int hasLost = 0;
 	private int maxWellDepth = 0;
-	private int landingHeight = 0;
+	private int landingHeight = State.COLS;
 
 	private void resetProperties() {
 		rowsCleared = 0;
@@ -31,7 +31,7 @@ public class PlayerSkeleton {
 		totalRowsWithHoles = 0;
 		totalColumnsWithHoles = 0;
 		maxWellDepth = 0;
-		landingHeight = 0;
+		landingHeight = State.COLS;
 	}
 
 	private void generateNextField(State state, int[] move) {
