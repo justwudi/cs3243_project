@@ -468,9 +468,11 @@ public class PlayerSkeleton {
 				int emptyNeighbours = 0;
 				int[] neighbours = {
 					Math.max(row - 1, 0)              * 100 + col,
-					Math.min(row + 1, State.ROWS - 1) * 100 + col,
-					row                               * 100 + Math.max(col - 1, 0),
-					row                               * 100 + Math.min(col + 1, State.COLS - 1)
+					Math.min(row + 1, State.ROWS - 1) * 100 + col
+					// Ignore left and right neighbours since the game does not allow
+					// slotting in pieces horizontally.
+					// row                               * 100 + Math.max(col - 1, 0),
+					// row                               * 100 + Math.min(col + 1, State.COLS - 1)
 				};
 
 				for (int neighbour : neighbours) {
