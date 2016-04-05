@@ -118,8 +118,7 @@ public class PlayerSkeleton {
 
 	private void generateHolesHelper() {
 		// int[] is an array of [row, col]
-		LinkedList<int[]> emptyPositions = new LinkedList<int[]>();
-		ArrayDeque<int[]> queue = new ArrayDeque<int[]>();
+		LinkedList<Integer> emptyPositions = new LinkedList<Integer>();
 		HashSet<Integer> rowsWithHoles = new HashSet<Integer>();
 		HashSet<Integer> columnsWithHoles = new HashSet<Integer>();
 		int height, row, col;
@@ -129,7 +128,7 @@ public class PlayerSkeleton {
 
 			for (row = 0; row < height - 1; row++) {
 				if (nextField[row][col] == 0) {
-					emptyPositions.add(new int[] {row, col});
+					emptyPositions.add(row * 100 + col);
 					rowsWithHoles.add(row);
 					columnsWithHoles.add(col);
 				}
@@ -438,7 +437,7 @@ public class PlayerSkeleton {
 		currentMinHeight = min(currentHeightArray);
 
 		// Get current number of holes
-		LinkedList<int[]> emptyPositions = new LinkedList<int[]>();
+		LinkedList<Integer> emptyPositions = new LinkedList<Integer>();
 		int height, row, col;
 
 		for (col = 0; col < currentHeightArray.length; col++) {
@@ -446,7 +445,7 @@ public class PlayerSkeleton {
 
 			for (row = 0; row < height - 1; row++) {
 				if (currentField[row][col] == 0) {
-					emptyPositions.add(new int[] {row, col});
+					emptyPositions.add(row*100 + col);
 				}
 			}
 		}
@@ -454,31 +453,31 @@ public class PlayerSkeleton {
 		currentHoles = getDistinctHoles(emptyPositions);
 	}
 
-	private int getDistinctHoles(LinkedList<int[]> emptyPositions) {
+	private int getDistinctHoles(LinkedList<Integer> emptyPositions) {
 		int holes = 0, row, col;
-		ArrayDeque<int[]> queue = new ArrayDeque<int[]>();
+		ArrayDeque<Integer> queue = new ArrayDeque<Integer>();
 
 		while (!emptyPositions.isEmpty()) {
 			boolean foundAdjacentPositions = false;
 			queue.addLast(emptyPositions.remove());
 
 			while (!foundAdjacentPositions) {
-				int[] position = queue.removeFirst();
-				row = position[0];
-				col = position[1];
+				int position = queue.removeFirst();
+				row = position / 100;
+				col = position % 100;
 				int emptyNeighbours = 0;
-				int[][] neighbours = {
-					{row - 1, col},
-					{row + 1, col},
-					{row, col - 1},
-					{row, col + 1}
+				int[] neighbours = {
+					Math.max(row - 1, 0)              * 100 + col,
+					Math.min(row + 1, State.ROWS - 1) * 100 + col,
+					row                               * 100 + Math.max(col - 1, 0),
+					row                               * 100 + Math.min(col + 1, State.COLS - 1)
 				};
 
-				for (int[] neighbour : neighbours) {
+				for (int neighbour : neighbours) {
 					if (emptyPositions.contains(neighbour)) {
 						emptyNeighbours += 1;
 						queue.addLast(neighbour);
-						emptyPositions.remove(neighbour);
+						emptyPositions.removeFirstOccurrence(neighbour);
 					}
 				}
 
