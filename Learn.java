@@ -1,7 +1,7 @@
 import java.util.concurrent.TimeUnit;
 
 public abstract class Learn {
-  protected final int totalFeatures = 23;
+  protected final int totalFeatures = 22;
   protected Weight[] weightPermutations;
 
   protected void computeScores() {

@@ -2,7 +2,6 @@ import java.util.*;
 
 public class PlayerSkeleton {
 
-	private final int COLS_SQ = State.COLS * State.COLS;
 	private final int SIZE = State.COLS * State.ROWS;
 
 	// Current state properties
@@ -187,8 +186,7 @@ public class PlayerSkeleton {
 		utility += featuresWeight.numOfWells() * getNumOfWells();
 		utility += featuresWeight.sumOfWellDepths() * getSumOfWellDepths();
 		utility += featuresWeight.maxHeightDiff() * getMaxHeightDiff();
-		utility += featuresWeight.diffVar() * getDiffVar() / COLS_SQ;
-		utility += featuresWeight.heightWeightedCells() * getHeightWeightedCells() / SIZE;
+		utility += featuresWeight.diffVar() * getDiffVar();
 		utility += featuresWeight.maxWellDepth() * getMaxWellDepth();
 		utility += featuresWeight.sumOfHoleDepths() * getSumOfHoleDepth();
 		utility += featuresWeight.landingHeight() * getLandingHeight();

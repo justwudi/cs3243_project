@@ -133,37 +133,37 @@ public class Weight implements Comparable<Weight> {
     return weightsArray[14];
   }
 
-  public double heightWeightedCells() {
+  public double landingHeight() {
     return weightsArray[15];
   }
 
-  public double landingHeight() {
+  public double minHeight() {
     return weightsArray[16];
   }
 
-  public double minHeight() {
+  public double rowTransitions() {
     return weightsArray[17];
   }
 
-  public double rowTransitions() {
+  public double averageLessMin() {
     return weightsArray[18];
   }
 
-  public double averageLessMin() {
+  public double changeMaxHeight() {
     return weightsArray[19];
   }
 
-  public double changeMaxHeight() {
+  public double changeAverageHeight() {
     return weightsArray[20];
   }
 
-  public double changeAverageHeight() {
+  public double changeNumHoles() {
     return weightsArray[21];
   }
 
-  public double changeNumHoles() {
-    return weightsArray[22];
-  }
+  // public double heightWeightedCells() {
+  //   return weightsArray[23];
+  // }
 
   public double[] getColumnWeights() {
     return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
@@ -201,14 +201,13 @@ public class Weight implements Comparable<Weight> {
       "Sum of Well Depths             " + String.format("%8.3f", weightsArray[12]) + "\n" +
       "Max Height Difference          " + String.format("%8.3f", weightsArray[13]) + "\n" +
       "Difference Variance            " + String.format("%8.3f", weightsArray[14]) + "\n" +
-      "Height Weighted Cells          " + String.format("%8.3f", weightsArray[15]) + "\n" +
-      "Landing Height                 " + String.format("%8.3f", weightsArray[16]) + "\n" +
-      "Min Height                     " + String.format("%8.3f", weightsArray[17]) + "\n" +
-      "Row Transitions                " + String.format("%8.3f", weightsArray[18]) + "\n" +
-      "Average Less Mean              " + String.format("%8.3f", weightsArray[19]) + "\n" +
-      "Change Max Height              " + String.format("%8.3f", weightsArray[20]) + "\n" +
-      "Change Average Height          " + String.format("%8.3f", weightsArray[21]) + "\n" +
-      "Change Number of Holes         " + String.format("%8.3f", weightsArray[22]) + "\n";
+      "Landing Height                 " + String.format("%8.3f", weightsArray[15]) + "\n" +
+      "Min Height                     " + String.format("%8.3f", weightsArray[16]) + "\n" +
+      "Row Transitions                " + String.format("%8.3f", weightsArray[17]) + "\n" +
+      "Average Less Mean              " + String.format("%8.3f", weightsArray[18]) + "\n" +
+      "Change Max Height              " + String.format("%8.3f", weightsArray[19]) + "\n" +
+      "Change Average Height          " + String.format("%8.3f", weightsArray[20]) + "\n" +
+      "Change Number of Holes         " + String.format("%8.3f", weightsArray[21]) + "\n";
 
     for (int i = 0; i < State.COLS; i++) {
       output += "Column " + i + "                       " + String.format("%8.3f", weightsArray[totalFeatures + i]) + "\n";
