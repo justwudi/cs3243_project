@@ -35,7 +35,6 @@ public class Weight implements Comparable<Weight> {
     velocity = new double[weights.length];
     for (int i = 0; i < weights.length; i++)
       velocity[i] = 0;
-    setHasLost(-10);
   }
 
   public double[] getWeights() {
