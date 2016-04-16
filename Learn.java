@@ -3,17 +3,22 @@ import java.util.concurrent.TimeUnit;
 public abstract class Learn {
   protected final int totalFeatures = 22;
   protected Weight[] weightPermutations;
+  private final int attempt = 3;
 
   protected void computeScores() {
     for (int i = 0; i < weightPermutations.length; i++) {
       Weight w = weightPermutations[i];
-      State state = new State();
-      PlayerSkeleton p = new PlayerSkeleton();
-      p.initWeights(w);
-      while (!state.hasLost()) {
-        state.makeMove(p.pickMove(state, state.legalMoves()));
+      w.score = 0;
+      for (int a = 0; a < attempt; a++) {
+        State state = new State();
+        PlayerSkeleton p = new PlayerSkeleton();
+        p.initWeights(w);
+        while (!state.hasLost()) {
+          state.makeMove(p.pickMove(state, state.legalMoves()));
+        }
+        w.score += state.getRowsCleared();
       }
-      w.score = state.getRowsCleared();
+      w.score /= attempt;
     }
   }
 

@@ -86,8 +86,8 @@ public class GALearn extends Learn {
 	public static void main(String[] args) {
 		long startTime, endTime;
 		GALearn ga = new GALearn();
-		ga.generateRandomWeights(500);
-		int cutOff = 10;
+		ga.generateRandomWeights(100);
+		int cutOff = 5;
 		int totalIteration = 1000;
 		for (int iteration = 0; iteration < totalIteration; iteration++) {
 			startTime = System.currentTimeMillis();
