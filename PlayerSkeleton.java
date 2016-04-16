@@ -140,15 +140,24 @@ public class PlayerSkeleton {
 		totalHoles = getDistinctHoles(emptyPositions);
 	}
 
-	private Weight featuresWeight;
+	// Weights to use when average height is less than half
+	private Weight featuresWeight1;
+	// Weights to use when average height is more than half
+	private Weight featuresWeight2;
 	public void initWeights(Weight weights) {
-		featuresWeight = weights;
+		featuresWeight1 = weights;
+		featuresWeight2 = weights;
+	}
+	public void initWeights(Weight weights1, Weight weights2) {
+		featuresWeight1 = weights1;
+		featuresWeight2 = weights2;
 	}
 
 	//Calculate utility
 	private double getUtility(State state, int[] move) {
 		generateNextField(state, move);
 		double utility = 0;
+		Weight featuresWeight = 2 * getAverageHeight() < State.ROWS ? featuresWeight1 : featuresWeight2;
 		double[] columnWeights = featuresWeight.getColumnWeights();
 
 		utility += featuresWeight.maxHeight() * getMaxHeight();
@@ -465,7 +474,7 @@ public class PlayerSkeleton {
 		State state = new State();
 		// new TFrame(state);
 		PlayerSkeleton p = new PlayerSkeleton();
-		double[] weightsArr = new double[] {
+		double[] weightsArr1 = new double[] {
 		/* Max Height                */     0.319,
 		/* Average Height            */    38.608,
 		/* Transitions               */     8.665,
@@ -499,13 +508,45 @@ public class PlayerSkeleton {
 		/* Column 8                  */     0.597,
 		/* Column 9                  */    -0.361
 		};
-		Weight w = new Weight(weightsArr);
-		p.initWeights(w);
-		int[] lastMove = new int[] { 0, 0 };
+		double[] weightsArr2 = new double[] {
+		/* Max Height                */     0.319,
+		/* Average Height            */    38.608,
+		/* Transitions               */     8.665,
+		/* Number of Holes           */     0.688,
+		/* Sum of Differences        */    -2.825,
+		/* Rows Cleared              */     0.740,
+		/* Sum of Hole Depths        */    -1.589,
+		/* Max Well Depth            */     0.146,
+		/* Has Lost                  */ -1661.991,
+		/* Number of Rows with Holes */    -0.983,
+		/* Total Size of Holes       */   -19.004,
+		/* Number of Wells           */     0.685,
+		/* Sum of Well Depths        */    -1.087,
+		/* Max Height Difference     */     0.367,
+		/* Difference Variance       */    -1.098,
+		/* Landing Height            */    -4.402,
+		/* Min Height                */    -0.015,
+		/* Row Transitions           */   -10.465,
+		/* Average Less Mean         */     1.635,
+		/* Change Max Height         */     0.043,
+		/* Change Average Height     */    -5.436,
+		/* Change Number of Holes    */   -31.775,
+		/* Column 0                  */    -0.360,
+		/* Column 1                  */    -5.737,
+		/* Column 2                  */    -0.552,
+		/* Column 3                  */    -5.111,
+		/* Column 4                  */    -0.877,
+		/* Column 5                  */    -3.750,
+		/* Column 6                  */    -3.696,
+		/* Column 7                  */    -6.280,
+		/* Column 8                  */     0.597,
+		/* Column 9                  */    -0.361
+		};
+		Weight w1 = new Weight(weightsArr1);
+		Weight w2 = new Weight(weightsArr2);
+		p.initWeights(w1, w2);
 		while(!state.hasLost()) {
-			int move = p.pickMove(state, state.legalMoves());
-			lastMove = state.legalMoves()[move];
-			state.makeMove(move);
+			state.makeMove(p.pickMove(state, state.legalMoves()));
 			// state.draw();
 			// state.drawNext(0, 0);
 			// try {
@@ -766,7 +807,7 @@ public class PlayerSkeleton {
 				"Landing Height                 " + String.format("%8.3f", weightsArray[15]) + "\n" +
 				"Min Height                     " + String.format("%8.3f", weightsArray[16]) + "\n" +
 				"Row Transitions                " + String.format("%8.3f", weightsArray[17]) + "\n" +
-				"Average Less Mean              " + String.format("%8.3f", weightsArray[18]) + "\n" +
+				"Average Less Min               " + String.format("%8.3f", weightsArray[18]) + "\n" +
 				"Change Max Height              " + String.format("%8.3f", weightsArray[19]) + "\n" +
 				"Change Average Height          " + String.format("%8.3f", weightsArray[20]) + "\n" +
 				"Change Number of Holes         " + String.format("%8.3f", weightsArray[21]) + "\n";
