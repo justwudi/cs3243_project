@@ -203,7 +203,7 @@ public class Weight implements Comparable<Weight> {
       "Landing Height                 " + String.format("%8.3f", weightsArray[15]) + "\n" +
       "Min Height                     " + String.format("%8.3f", weightsArray[16]) + "\n" +
       "Row Transitions                " + String.format("%8.3f", weightsArray[17]) + "\n" +
-      "Average Less Mean              " + String.format("%8.3f", weightsArray[18]) + "\n" +
+      "Average Less Min               " + String.format("%8.3f", weightsArray[18]) + "\n" +
       "Change Max Height              " + String.format("%8.3f", weightsArray[19]) + "\n" +
       "Change Average Height          " + String.format("%8.3f", weightsArray[20]) + "\n" +
       "Change Number of Holes         " + String.format("%8.3f", weightsArray[21]) + "\n";
