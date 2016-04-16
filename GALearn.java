@@ -6,16 +6,16 @@ public class GALearn extends Learn {
 	private final int averageChance = 10;
 
 	private void generateRandomWeights(int numPermutations) {
-		weightPermutations = new Weight[numPermutations];
+		weightPermutations = new PlayerSkeleton.Weight[numPermutations];
 		for (int i = 0; i < numPermutations; i++) {
-			weightPermutations[i] = new Weight(totalFeatures);
+			weightPermutations[i] = new PlayerSkeleton.Weight(totalFeatures);
 		}
 	}
 
-	private Weight[] generateOffspringsByPairingParents(int cutOff) {
+	private PlayerSkeleton.Weight[] generateOffspringsByPairingParents(int cutOff) {
 		// Create half of parents
 		Integer[] indexArray = new Integer[cutOff];
-		Weight[] offsprings = new Weight[cutOff/2];
+		PlayerSkeleton.Weight[] offsprings = new PlayerSkeleton.Weight[cutOff/2];
 
 		for (int i = 0; i < cutOff; i++) indexArray[i] = i;
 
@@ -29,13 +29,13 @@ public class GALearn extends Learn {
 			for (int j = 0; j < offspring.length; j++) {
 				offspring[j] = (weight1[j] + weight2[j]) / 2;
 			}
-			offsprings[i] = new Weight(offspring);
+			offsprings[i] = new PlayerSkeleton.Weight(offspring);
 		}
 
 		return offsprings;
 	}
 
-	private Weight[] generateOffspringsByCombination(int cutOff) {
+	private PlayerSkeleton.Weight[] generateOffspringsByCombination(int cutOff) {
 		int combinations = 0;
 		for (int father = 0; father < cutOff - 1; father++) {
 			for (int mother = father + 1; mother < cutOff; mother++) {
@@ -43,7 +43,7 @@ public class GALearn extends Learn {
 			}
 		}
 
-		Weight[] offsprings = new Weight[combinations];
+		PlayerSkeleton.Weight[] offsprings = new PlayerSkeleton.Weight[combinations];
 		int offspringIndex = 0;
 
 		for (int father = 0; father < cutOff - 1; father++) {
@@ -61,7 +61,7 @@ public class GALearn extends Learn {
 					}
 				}
 
-				offsprings[offspringIndex] = new Weight(offspring);
+				offsprings[offspringIndex] = new PlayerSkeleton.Weight(offspring);
 				offspringIndex++;
 			}
 		}
@@ -69,7 +69,7 @@ public class GALearn extends Learn {
 		return offsprings;
 	}
 
-	private void nextGen(Weight[] offsprings) {
+	private void nextGen(PlayerSkeleton.Weight[] offsprings) {
 		int offspringIndex = 0;
 		for (int i = weightPermutations.length - offsprings.length; i < weightPermutations.length; i++) {
 			weightPermutations[i] = offsprings[offspringIndex];
@@ -77,7 +77,7 @@ public class GALearn extends Learn {
 		}
 	}
 
-	private void mutate(Weight[] offsprings, int cutOff) {
+	private void mutate(PlayerSkeleton.Weight[] offsprings, int cutOff) {
 		for (int i = cutOff; i < weightPermutations.length - offsprings.length; i++) {
 			weightPermutations[i].mutate(mutation);
 		}
@@ -93,7 +93,7 @@ public class GALearn extends Learn {
 			startTime = System.currentTimeMillis();
 			ga.computeScores();
 			Arrays.sort(ga.weightPermutations);
-			Weight[] offsprings = ga.generateOffspringsByCombination(cutOff);
+			PlayerSkeleton.Weight[] offsprings = ga.generateOffspringsByCombination(cutOff);
 			ga.nextGen(offsprings);
 			ga.mutate(offsprings, cutOff);
 			System.out.println("Iteration " + (iteration + 1) + ": Max "+ga.weightPermutations[0].score+" rows.");

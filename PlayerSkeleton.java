@@ -163,7 +163,7 @@ public class PlayerSkeleton {
 	};
 
 
-	private static Weight featuresWeight;
+	private Weight featuresWeight;
 	public void initWeights(Weight weights) {
 		featuresWeight = weights;
 	}
@@ -514,7 +514,7 @@ public class PlayerSkeleton {
 		State state = new State();
 		//new TFrame(state);
 		PlayerSkeleton p = new PlayerSkeleton();
-		p.initWeights(featuresWeight);
+		p.initWeights(p.featuresWeight);
 		while(!state.hasLost()) {
 			state.makeMove(p.pickMove(state, state.legalMoves()));
 			// state.draw();
@@ -576,5 +576,218 @@ public class PlayerSkeleton {
 		}
 
 		return ((double) total) / ((double) arr.length);
+	}
+
+	public static class Weight implements Comparable<Weight> {
+		private final double c1 = 2;
+		private final double c2 = 2;
+		private final double vMax = 20;
+		private int totalFeatures;
+		private double[] weightsArray;
+
+		private double[] velocity;
+		private double[] pBestWeightsArray;
+		private int pBestScore;
+		private double[] lBestWeightsArray;
+		private int lBestScore;
+
+		private Random rand = new Random();
+
+		int score = 0;
+
+		public Weight(int totalFeatures) {
+			this.totalFeatures = totalFeatures;
+			int arrayLength = totalFeatures + State.COLS;
+			weightsArray = new double[arrayLength];
+			velocity = new double[arrayLength];
+			for (int i = 0; i < arrayLength; i++)
+				weightsArray[i] = Math.random() * 20 - 10;
+			for (int i = 0; i < arrayLength; i++)
+				velocity[i] = 0;
+			setHasLost(-10);
+		}
+
+		public Weight(double[] weights) {
+			totalFeatures = weights.length - State.COLS;
+			weightsArray = weights;
+			velocity = new double[weights.length];
+			for (int i = 0; i < weights.length; i++)
+				velocity[i] = 0;
+		}
+
+		public double[] getWeights() {
+			return Arrays.copyOf(weightsArray, weightsArray.length);
+		}
+
+		public void updatePBest() {
+			if (pBestWeightsArray == null || score > pBestScore) {
+				pBestScore = score;
+				pBestWeightsArray = Arrays.copyOf(weightsArray, weightsArray.length);
+			}
+		}
+
+		public void updateLBest(int lBestScore, double[] lBestWeightsArray) {
+			if (this.lBestWeightsArray == null || lBestScore > this.lBestScore) {
+				this.lBestScore = lBestScore;
+				this.lBestWeightsArray = lBestWeightsArray;
+			}
+		}
+
+		public void updatePosition() {
+			for (int i = 0; i < weightsArray.length; i++) {
+				velocity[i] += c1 * Math.random() * (pBestWeightsArray[i] - weightsArray[i]) +
+											 c2 * Math.random() * (lBestWeightsArray[i] - weightsArray[i]);
+				if (velocity[i] > vMax) {
+					velocity[i] = vMax;
+				} else if (velocity[i] < -vMax) {
+					velocity[i] = -vMax;
+				}
+				weightsArray[i] += velocity[i];
+			}
+		}
+
+		public double maxHeight() {
+			return weightsArray[0];
+		}
+
+		public double avgHeight() {
+			return weightsArray[1];
+		}
+
+		public double transitions() {
+			return weightsArray[2];
+		}
+
+		public double holes() {
+			return weightsArray[3];
+		}
+
+		public double sumDiffs() {
+			return weightsArray[4];
+		}
+
+		public double rowsCleared() {
+			return weightsArray[5];
+		}
+
+		public double sumOfHoleDepths() {
+			return weightsArray[6];
+		}
+
+		public double maxWellDepth() {
+			return weightsArray[7];
+		}
+
+		public void setHasLost(double value) {
+			weightsArray[8] = value;
+		}
+
+		public double hasLost() {
+			return weightsArray[8];
+		}
+
+		public double numOfRowsWithHoles() {
+			return weightsArray[9];
+		}
+
+		public double totalSizeOfHoles() {
+			return weightsArray[10];
+		}
+
+		public double numOfWells() {
+			return weightsArray[11];
+		}
+
+		public double sumOfWellDepths() {
+			return weightsArray[12];
+		}
+
+		public double maxHeightDiff() {
+			return weightsArray[13];
+		}
+
+		public double diffVar() {
+			return weightsArray[14];
+		}
+
+		public double landingHeight() {
+			return weightsArray[15];
+		}
+
+		public double minHeight() {
+			return weightsArray[16];
+		}
+
+		public double rowTransitions() {
+			return weightsArray[17];
+		}
+
+		public double averageLessMin() {
+			return weightsArray[18];
+		}
+
+		public double changeMaxHeight() {
+			return weightsArray[19];
+		}
+
+		public double changeAverageHeight() {
+			return weightsArray[20];
+		}
+
+		public double changeNumHoles() {
+			return weightsArray[21];
+		}
+
+		public double[] getColumnWeights() {
+			return Arrays.copyOfRange(weightsArray, totalFeatures, totalFeatures + State.COLS);
+		}
+
+		public void mutate(int mutation) {
+			for (int feature = 0; feature < weightsArray.length; feature++ ) {
+				if (rand.nextInt(100) < mutation) {
+					double percentage = 0.01 * (rand.nextInt(40) - 20);
+					weightsArray[feature] = weightsArray[feature] + (percentage * weightsArray[feature]);
+				}
+			}
+		}
+
+		@Override
+		public int compareTo(Weight s) {
+			return s.score - this.score;
+		}
+
+		@Override
+		public String toString() {
+			String output =
+				"Max Height                     " + String.format("%8.3f", weightsArray[0])  + "\n" +
+				"Average Height                 " + String.format("%8.3f", weightsArray[1])  + "\n" +
+				"Transitions                    " + String.format("%8.3f", weightsArray[2])  + "\n" +
+				"Number of Holes                " + String.format("%8.3f", weightsArray[3])  + "\n" +
+				"Sum of Differences             " + String.format("%8.3f", weightsArray[4])  + "\n" +
+				"Rows Cleared                   " + String.format("%8.3f", weightsArray[5])  + "\n" +
+				"Sum of Hole Depths             " + String.format("%8.3f", weightsArray[6])  + "\n" +
+				"Max Well Depth                 " + String.format("%8.3f", weightsArray[7])  + "\n" +
+				"Has Lost                       " + String.format("%8.3f", weightsArray[8])  + "\n" +
+				"Number of Rows with Holes      " + String.format("%8.3f", weightsArray[9])  + "\n" +
+				"Total Size of Holes            " + String.format("%8.3f", weightsArray[10]) + "\n" +
+				"Number of Wells                " + String.format("%8.3f", weightsArray[11]) + "\n" +
+				"Sum of Well Depths             " + String.format("%8.3f", weightsArray[12]) + "\n" +
+				"Max Height Difference          " + String.format("%8.3f", weightsArray[13]) + "\n" +
+				"Difference Variance            " + String.format("%8.3f", weightsArray[14]) + "\n" +
+				"Landing Height                 " + String.format("%8.3f", weightsArray[15]) + "\n" +
+				"Min Height                     " + String.format("%8.3f", weightsArray[16]) + "\n" +
+				"Row Transitions                " + String.format("%8.3f", weightsArray[17]) + "\n" +
+				"Average Less Mean              " + String.format("%8.3f", weightsArray[18]) + "\n" +
+				"Change Max Height              " + String.format("%8.3f", weightsArray[19]) + "\n" +
+				"Change Average Height          " + String.format("%8.3f", weightsArray[20]) + "\n" +
+				"Change Number of Holes         " + String.format("%8.3f", weightsArray[21]) + "\n";
+
+			for (int i = 0; i < State.COLS; i++) {
+				output += "Column " + i + "                       " +
+					String.format("%8.3f", weightsArray[totalFeatures + i]) + "\n";
+			}
+
+			return output;
+		}
 	}
 }

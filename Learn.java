@@ -2,12 +2,12 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Learn {
   protected final int totalFeatures = 22;
-  protected Weight[] weightPermutations;
-  private final int attempt = 3;
+  protected PlayerSkeleton.Weight[] weightPermutations;
+  protected final int attempt = 3;
 
   protected void computeScores() {
     for (int i = 0; i < weightPermutations.length; i++) {
-      Weight w = weightPermutations[i];
+      PlayerSkeleton.Weight w = weightPermutations[i];
       w.score = 0;
       for (int a = 0; a < attempt; a++) {
         State state = new State();

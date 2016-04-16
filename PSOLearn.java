@@ -2,14 +2,14 @@ import java.util.*;
 
 public class PSOLearn extends Learn {
   private final int totalLocalGroups = 10;
-  private Weight[][] localGroups = new Weight[totalLocalGroups][];
+  private PlayerSkeleton.Weight[][] localGroups = new PlayerSkeleton.Weight[totalLocalGroups][];
   private int gBestScore;
   private double[] gBestWeightsArray;
 
   private void generateRandomWeights(int numPermutations) {
-    weightPermutations = new Weight[numPermutations];
+    weightPermutations = new PlayerSkeleton.Weight[numPermutations];
     for (int i = 0; i < numPermutations; i++) {
-      weightPermutations[i] = new Weight(totalFeatures);
+      weightPermutations[i] = new PlayerSkeleton.Weight(totalFeatures);
     }
 
     int groupSize = numPermutations / totalLocalGroups;
@@ -22,7 +22,7 @@ public class PSOLearn extends Learn {
       } else {
         endIndex = startIndex + groupSize;
       }
-      localGroups[groupNo] = new Weight[endIndex - startIndex];
+      localGroups[groupNo] = new PlayerSkeleton.Weight[endIndex - startIndex];
 
       int index = 0;
       for (int i = startIndex; i < endIndex; i++) {
@@ -40,9 +40,9 @@ public class PSOLearn extends Learn {
 
   private void updateLBest() {
     for (int groupNo = 0; groupNo < 10; groupNo++) {
-      Weight[] group = localGroups[groupNo];
+      PlayerSkeleton.Weight[] group = localGroups[groupNo];
       Arrays.sort(group);
-      Weight lBest = group[0];
+      PlayerSkeleton.Weight lBest = group[0];
       int lBestScore = lBest.score;
       double[] lBestWeightsArray = Arrays.copyOf(lBest.getWeights(), totalFeatures + State.COLS);
 
