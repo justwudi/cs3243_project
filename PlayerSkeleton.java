@@ -140,29 +140,6 @@ public class PlayerSkeleton {
 		totalHoles = getDistinctHoles(emptyPositions);
 	}
 
-	private final String MAX_HEIGHT      = "MAX_HEIGHT";
-	private final String AVG_HEIGHT      = "AVG_HEIGHT";
-	private final String TRANSITIONS     = "TRANSITIONS";
-	private final String HOLES           = "HOLES";
-	private final String SUM_DIFFS       = "SUM_DIFFS";
-	private final String ROWS_CLEARED    = "ROWS_CLEARED";
-	private final String ROWS_WITH_HOLES = "ROWS_WITH_HOLES";
-	private final String MAX_WELL_DEPTH  = "MAX_WELL_DEPTH";
-	private final String HAS_LOST        = "HAS_LOST";
-
-	private String[] features = {
-		MAX_HEIGHT,
-		AVG_HEIGHT,
-		TRANSITIONS,
-		HOLES,
-		SUM_DIFFS,
-		ROWS_CLEARED,
-		ROWS_WITH_HOLES,
-		MAX_WELL_DEPTH,
-		HAS_LOST
-	};
-
-
 	private Weight featuresWeight;
 	public void initWeights(Weight weights) {
 		featuresWeight = weights;
@@ -264,21 +241,6 @@ public class PlayerSkeleton {
 
 	private int getRowsCleared() {
 		return rowsCleared;
-	}
-
-	private int numberOfOccupiedCell(State state) {
-		int[][] field = state.getField();
-		int fullCells = 0;
-
-		for (int row = 0; row < State.ROWS; row++) {
-			for (int col = 0; col < State.COLS; col++) {
-				if (field[row][col] != 0) {
-					fullCells++;
-				}
-			}
-		}
-
-		return fullCells;
 	}
 
 	private int getSumDiffs() {
@@ -398,17 +360,6 @@ public class PlayerSkeleton {
 			diffVar += Math.pow(differenceArray[column] - diffMean, 2);
 		}
 		return diffVar;
-	}
-
-	// Get the height weighted cells
-	private double getHeightWeightedCells() {
-		double weightedCells = 0.0;
-		for (int row = 0; row < max(heightArray); row++) {
-			for (int column = 0; column < nextField[row].length; column++) {
-				weightedCells += nextField[row][column] != 0 ? (row + 1) : 0;
-			}
-		}
-		return weightedCells;
 	}
 
 	private double getLandingHeight() {
