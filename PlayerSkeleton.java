@@ -463,18 +463,56 @@ public class PlayerSkeleton {
 
 	public static void main(String[] args) {
 		State state = new State();
-		//new TFrame(state);
+		// new TFrame(state);
 		PlayerSkeleton p = new PlayerSkeleton();
-		p.initWeights(p.featuresWeight);
+		double[] weightsArr = new double[] {
+		/* Max Height                */     0.319,
+		/* Average Height            */    38.608,
+		/* Transitions               */     8.665,
+		/* Number of Holes           */     0.688,
+		/* Sum of Differences        */    -2.825,
+		/* Rows Cleared              */     0.740,
+		/* Sum of Hole Depths        */    -1.589,
+		/* Max Well Depth            */     0.146,
+		/* Has Lost                  */ -1661.991,
+		/* Number of Rows with Holes */    -0.983,
+		/* Total Size of Holes       */   -19.004,
+		/* Number of Wells           */     0.685,
+		/* Sum of Well Depths        */    -1.087,
+		/* Max Height Difference     */     0.367,
+		/* Difference Variance       */    -1.098,
+		/* Landing Height            */    -4.402,
+		/* Min Height                */    -0.015,
+		/* Row Transitions           */   -10.465,
+		/* Average Less Mean         */     1.635,
+		/* Change Max Height         */     0.043,
+		/* Change Average Height     */    -5.436,
+		/* Change Number of Holes    */   -31.775,
+		/* Column 0                  */    -0.360,
+		/* Column 1                  */    -5.737,
+		/* Column 2                  */    -0.552,
+		/* Column 3                  */    -5.111,
+		/* Column 4                  */    -0.877,
+		/* Column 5                  */    -3.750,
+		/* Column 6                  */    -3.696,
+		/* Column 7                  */    -6.280,
+		/* Column 8                  */     0.597,
+		/* Column 9                  */    -0.361
+		};
+		Weight w = new Weight(weightsArr);
+		p.initWeights(w);
+		int[] lastMove = new int[] { 0, 0 };
 		while(!state.hasLost()) {
-			state.makeMove(p.pickMove(state, state.legalMoves()));
+			int move = p.pickMove(state, state.legalMoves());
+			lastMove = state.legalMoves()[move];
+			state.makeMove(move);
 			// state.draw();
 			// state.drawNext(0, 0);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			// try {
+			// 	Thread.sleep(10);
+			// } catch (InterruptedException e) {
+			// 	e.printStackTrace();
+			// }
 		}
 		System.out.println("You have completed "+state.getRowsCleared()+" rows.");
 	}
